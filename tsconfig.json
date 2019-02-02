@@ -1,0 +1,9 @@
+{
+  "extends": "./node_modules/@lifeomic/typescript-tools/config/typescript",
+  "compilerOptions": {
+    "module": "CommonJS",
+    "outDir": "./work",
+    "rootDir": ".",
+    "baseUrl": "."
+  }
+}

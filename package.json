@@ -1,0 +1,16 @@
+{
+  "name": "jupiter-integration-veracode",
+  "version": "1.0.0",
+  "license": "MIT",
+  "scripts": {
+    "test": "jest"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "ts-node": "^8.0.2"
+  },
+  "devDependencies": {
+    "@lifeomic/typescript-tools": "^3.1.0",
+    "@types/node": "^10.12.20"
+  }
+}
