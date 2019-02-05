@@ -6,6 +6,9 @@ module.exports = {
     '<rootDir>/**/*.test.{js,ts}'
   ],
   collectCoverageFrom: ['src/**/*.ts'],
+  coveragePathIgnorePatterns: [
+    '<rootDir>/src/handler.ts'
+  ],
   moduleFileExtensions: ['ts', 'js'],
   testEnvironment: 'node',
   clearMocks: true,
