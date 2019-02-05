@@ -1,3 +1,5 @@
 node_modules/
 work/
+coverage/
+jupiterone-jupiter-managed-integration-sdk-*
 yarn-error.log

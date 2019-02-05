@@ -1,12 +1,12 @@
 import crypto from 'crypto';
-import axios, { AxiosInstance } from 'axios';
+import { AxiosInstance } from 'axios';
 import { FindingEntity, ApplicationEntity } from './types';
 import { toFindingEntities, toApplicationEntities } from './converters';
 
-const METHOD_GET = 'GET';
+export const VERA_HOST = 'api.veracode.com';
+export const VERA_API_BASE = '/appsec/v1/';
 
-const VERA_HOST = 'api.veracode.com';
-const VERA_API_BASE = '/appsec/v1/';
+const METHOD_GET = 'GET';
 const VERA_HASH_ALG = 'sha256';
 const VERA_AUTH_SCHEME = 'VERACODE-HMAC-SHA-256';
 const VERA_REQUEST_VERSION = 'vcode_request_version_1';
@@ -18,12 +18,14 @@ export default class VeracodeRESTClient {
 
   axiosClient: AxiosInstance;
 
-  constructor (apiId: string, apiSecretKey: string) {
+  constructor (axiosClient: AxiosInstance, apiId: string, apiSecretKey: string) {
+    if (apiId === undefined || apiSecretKey === undefined) {
+      throw new Error('apiId and apiSecretKey are required');
+    }
+
     this.apiId = apiId;
     this.apiSecretKey = apiSecretKey;
-    this.axiosClient = axios.create({
-      baseURL: `https://${VERA_HOST}${VERA_API_BASE}`
-    });
+    this.axiosClient = axiosClient;
   }
 
   newNonce (size: number) {
