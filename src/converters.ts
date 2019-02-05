@@ -28,17 +28,18 @@ export function toFindingEntities(
   for (const finding of findings) {
     entities.push({
       _class: 'Vulnerability',
-      _type: 'veracode_finding',
       _key: finding.guid,
-      severity: finding.severity,
+      _type: 'veracode_finding',
+      category: 'application',
+      cvss: finding.cvss,
+      description: finding.cwe.description,
       exploitability: finding.exploitability,
       impacts: [application],
-      public: false,
-      cvss: finding.cvss,
       name: finding.cwe.name,
-      description: finding.cwe.description,
+      public: false,
+      recommendation: finding.cwe.recommendation,
       references: finding.cwe.references.map(r => r.url),
-      recommendation: finding.cwe.recommendation
+      severity: finding.severity
     });
   }
   return entities;

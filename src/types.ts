@@ -6,13 +6,14 @@ export interface ApplicationEntity {
 }
 
 export interface FindingEntity extends EntityFromIntegration {
-  severity: number,
+  category: string,
+  cvss?: number
+  description: string,
   exploitability: number,
   impacts: string[],
-  public: boolean,
-  references: string[],
   name: string,
-  description: string,
+  public: boolean,
   recommendation: string,
-  cvss?: number
+  references: string[],
+  severity: number,
 }
