@@ -1,6 +1,6 @@
-import createMockAxiosClient, { mockApplication } from './util/createMockAxiosClient';
+import createMockAxiosClient, { mockApplication } from '../test/helpers/createMockAxiosClient';
 import axios from 'axios';
-import VeracodeRESTClient from '../src/VeracodeRESTClient';
+import VeracodeRESTClient from './VeracodeRESTClient';
 
 jest.mock('axios');
 

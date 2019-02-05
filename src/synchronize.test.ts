@@ -2,13 +2,13 @@ import {
   createTestIntegrationExecutionContext
 } from '@jupiterone/jupiter-managed-integration-sdk';
 import axios from 'axios';
-import synchronize from '../src/synchronize';
+import synchronize from './synchronize';
 import
   createMockAxiosClient,
   {
     mockApplication,
     mockFinding
-  } from './util/createMockAxiosClient';
+  } from '../test/helpers/createMockAxiosClient';
 
 jest.mock('axios');
 

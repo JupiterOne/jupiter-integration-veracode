@@ -3,7 +3,7 @@ module.exports = {
     '^.+\\.tsx?$': 'ts-jest'
   },
   testMatch: [
-    '<rootDir>/test/*.test.{js,ts}'
+    '<rootDir>/**/*.test.{js,ts}'
   ],
   collectCoverageFrom: ['src/**/*.ts'],
   moduleFileExtensions: ['ts', 'js'],
