@@ -12,7 +12,7 @@ interface CWE {
   recommendation: string;
 }
 
-interface FindingData {
+export interface FindingData {
   guid: string;
   severity: number;
   exploitability: number;
@@ -48,7 +48,7 @@ interface ApplicationProfile {
   name: string;
 }
 
-interface ApplicationData {
+export interface ApplicationData {
   guid: string;
   profile: ApplicationProfile;
 }
