@@ -1,9 +1,19 @@
 {
-  "extends": "./node_modules/@lifeomic/typescript-tools/config/typescript",
   "compilerOptions": {
-    "module": "CommonJS",
-    "outDir": "./work",
-    "rootDir": ".",
-    "baseUrl": "."
+    "outDir": "build",
+    "noUnusedLocals": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "allowJs": false,
+    "moduleResolution": "node",
+    "target": "ESNext",
+    "module": "commonjs",
+    "pretty": true,
+    "inlineSourceMap": true
   }
 }

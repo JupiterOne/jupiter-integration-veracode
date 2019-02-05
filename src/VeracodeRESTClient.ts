@@ -1,5 +1,7 @@
 import crypto from 'crypto';
 import axios, { AxiosInstance } from 'axios';
+import { FindingEntity, ApplicationEntity } from './types';
+import { toFindingEntities, toApplicationEntities } from './converters';
 
 const METHOD_GET = 'GET';
 
@@ -62,25 +64,25 @@ export default class VeracodeRESTClient {
     );
   }
 
-  async list(resource: string, pathPrefix?: string) {
+  async list(resource: string, pathPrefix?: string): Promise<any[]> {
     const response = await this.get((pathPrefix || '') + resource);
     if (response.data._embedded) {
-      return response.data._embedded[resource] as any[];
+      return response.data._embedded[resource];
     } else {
       return [];
     }
   }
 
-  async applications() {
-    return this.list('applications');
+  async applications(): Promise<ApplicationEntity[]> {
+    const applications = await this.list('applications');
+    return toApplicationEntities(applications);
   }
 
-  async findings(applicationGUID: string) {
-    return this.list('findings', `applications/${applicationGUID}/`);
-  }
-
-  async application(applicationGUID: string) {
-    const response = await this.get(`applications/${applicationGUID}`);
-    return response.data;
+  async findings(
+    applicationGUID: string,
+    applicationName: string
+  ): Promise<FindingEntity[]> {
+    const findings = await this.list('findings', `applications/${applicationGUID}/`);
+    return toFindingEntities(findings, applicationName);
   }
 }
