@@ -1,14 +1,14 @@
 import {
-  createTestIntegrationExecutionContext
+  createTestIntegrationExecutionContext,
 } from '@jupiterone/jupiter-managed-integration-sdk';
 import axios from 'axios';
-import synchronize from './synchronize';
 import
   createMockAxiosClient,
   {
     mockApplication,
-    mockFinding
+    mockFinding,
   } from '../test/helpers/createMockAxiosClient';
+import synchronize from './synchronize';
 
 jest.mock('axios');
 
@@ -17,24 +17,24 @@ const mockAxiosClient = createMockAxiosClient(mockApplication, [mockFinding]);
 const persisterOperations = {
   created: 1,
   updated: 0,
-  deleted: 0
+  deleted: 0,
 };
 
 test('compiles and runs', async () => {
   (axios.create as jest.Mock).mockReturnValue(mockAxiosClient);
   const executionContext = createTestIntegrationExecutionContext();
-  
+
   executionContext.instance.config = {
     veracodeApiId: 'some-id',
-    veracodeApiSecret: 'some-secret'
+    veracodeApiSecret: 'some-secret',
   };
 
   jest.spyOn(
-    executionContext.clients.getClients().graph, 'findEntities'
+    executionContext.clients.getClients().graph, 'findEntities',
   ).mockResolvedValue([]);
-  
+
   jest.spyOn(
-    executionContext.clients.getClients().persister, 'publishPersisterOperations'
+    executionContext.clients.getClients().persister, 'publishPersisterOperations',
   ).mockResolvedValue(persisterOperations);
 
   const result = await synchronize(executionContext);

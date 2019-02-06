@@ -1,5 +1,5 @@
-import createMockAxiosClient, { mockApplication } from '../test/helpers/createMockAxiosClient';
 import axios from 'axios';
+import createMockAxiosClient, { mockApplication } from '../test/helpers/createMockAxiosClient';
 import VeracodeRESTClient from './VeracodeRESTClient';
 
 jest.mock('axios');
@@ -12,7 +12,7 @@ test('returns empty array if no data returned by Veracode', async () => {
 
   const findings = await veracode.findings(
     mockApplication.guid,
-    mockApplication.profile.name
+    mockApplication.profile.name,
   );
   expect(findings).toEqual([]);
 });

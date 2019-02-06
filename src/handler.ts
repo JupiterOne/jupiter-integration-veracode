@@ -1,12 +1,12 @@
 import {
   IntegrationExecutionContext,
+  IntegrationExecutionResult,
   IntegrationInvocationEvent,
-  IntegrationExecutionResult
-} from "@jupiterone/jupiter-managed-integration-sdk";
-import synchronize from "./synchronize";
+} from '@jupiterone/jupiter-managed-integration-sdk';
+import synchronize from './synchronize';
 
 export default async function handler(
-  context: IntegrationExecutionContext<IntegrationInvocationEvent>
+  context: IntegrationExecutionContext<IntegrationInvocationEvent>,
 ): Promise<IntegrationExecutionResult> {
   return { operations: await synchronize(context) };
 }

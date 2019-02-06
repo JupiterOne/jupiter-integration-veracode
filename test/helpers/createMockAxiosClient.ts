@@ -1,11 +1,11 @@
-import wrapVeracodeApiData from './wrapVeracodeApiData';
 import { ApplicationData, FindingData } from '../../src/converters';
+import wrapVeracodeApiData from './wrapVeracodeApiData';
 
 export const mockApplication = {
   guid: 'some-guid',
   profile: {
-    name: 'my-app'
-  }
+    name: 'my-app',
+  },
 };
 
 export const mockFinding = {
@@ -17,11 +17,11 @@ export const mockFinding = {
     description: 'This vulnerability is very bad.',
     references: [{
       name: 'Reference',
-      url: 'https://somewhere.com'
+      url: 'https://somewhere.com',
     }],
-    recommendation: 'Fix it!'
+    recommendation: 'Fix it!',
   },
-  cvss: 50
+  cvss: 50,
 };
 
 export default function (application: ApplicationData, findings: FindingData[]) {
@@ -30,7 +30,7 @@ export default function (application: ApplicationData, findings: FindingData[]) 
       switch (url) {
         case 'applications':
           return wrapVeracodeApiData({
-            applications: [application]
+            applications: [application],
           });
         case `applications/${application.guid}/findings`:
           if (findings.length === 0) {
@@ -38,9 +38,9 @@ export default function (application: ApplicationData, findings: FindingData[]) 
           }
 
           return wrapVeracodeApiData({
-            findings: findings
+            findings,
           });
       }
-    }
+    },
   };
 }

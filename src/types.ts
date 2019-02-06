@@ -1,19 +1,19 @@
-import { EntityFromIntegration } from "@jupiterone/jupiter-managed-integration-sdk/persister/types";
+import { EntityFromIntegration } from '@jupiterone/jupiter-managed-integration-sdk/persister/types';
 
 export interface ApplicationEntity {
   guid: string;
-  name: string
+  name: string;
 }
 
 export interface FindingEntity extends EntityFromIntegration {
-  category: string,
-  cvss?: number
-  description: string,
-  exploitability: number,
-  impacts: string[],
-  name: string,
-  public: boolean,
-  recommendation: string,
-  references: string[],
-  severity: number,
+  category: string;
+  cvss?: number;
+  description: string;
+  exploitability: number;
+  impacts: string[];
+  name: string;
+  public: boolean;
+  recommendation: string;
+  references: string[];
+  severity: number;
 }

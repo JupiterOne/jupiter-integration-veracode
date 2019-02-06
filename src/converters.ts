@@ -1,4 +1,4 @@
-import { FindingEntity, ApplicationEntity } from "./types";
+import { ApplicationEntity, FindingEntity } from './types';
 
 interface CWEReference {
   name: string;
@@ -22,7 +22,7 @@ export interface FindingData {
 
 export function toFindingEntities(
   findings: FindingData[],
-  application: string
+  application: string,
 ): FindingEntity[] {
   const entities = new Array<FindingEntity>();
   for (const finding of findings) {
@@ -39,7 +39,7 @@ export function toFindingEntities(
       public: false,
       recommendation: finding.cwe.recommendation,
       references: finding.cwe.references.map(r => r.url),
-      severity: finding.severity
+      severity: finding.severity,
     });
   }
   return entities;
@@ -55,13 +55,13 @@ export interface ApplicationData {
 }
 
 export function toApplicationEntities(
-  applications: ApplicationData[]
+  applications: ApplicationData[],
 ): ApplicationEntity[] {
   const entities = new Array<ApplicationEntity>();
   for (const application of applications) {
     entities.push({
       guid: application.guid,
-      name: application.profile.name
+      name: application.profile.name,
     });
   }
   return entities;

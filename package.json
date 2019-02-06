@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "start": "ts-node execute.ts | bunyan",
+    "start": "ts-node tools/execute.ts | bunyan",
     "start:graph": "docker run -d --rm --name jupiterone-local-graph -p 8182:8182 tinkerpop/gremlin-server:3.3",
     "stop:graph": "docker stop jupiterone-local-graph",
-    "test": "yarn jest"
+    "lint": "tslint --project .",
+    "test": "jest"
   },
   "dependencies": {
     "aws-sdk": "^2.396.0",
@@ -26,6 +27,7 @@
     "@types/jest": "^22.2.3",
     "@types/node": "^10.12.20",
     "jest": "^23.5.0",
-    "ts-jest": "^23.10.5"
+    "ts-jest": "^23.10.5",
+    "ts-lint": "^4.5.1"
   }
 }

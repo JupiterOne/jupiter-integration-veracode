@@ -1,7 +1,7 @@
-import crypto from 'crypto';
 import { AxiosInstance } from 'axios';
-import { FindingEntity, ApplicationEntity } from './types';
-import { toFindingEntities, toApplicationEntities } from './converters';
+import crypto from 'crypto';
+import { toApplicationEntities, toFindingEntities } from './converters';
+import { ApplicationEntity, FindingEntity } from './types';
 
 export const VERA_HOST = 'api.veracode.com';
 export const VERA_API_BASE = '/appsec/v1/';
@@ -60,9 +60,9 @@ export default class VeracodeRESTClient {
       url,
       {
         headers: {
-          'Authorization': this.calculateAuthorizationHeader(url, METHOD_GET)
-        }
-      }
+          Authorization: this.calculateAuthorizationHeader(url, METHOD_GET),
+        },
+      },
     );
   }
 
@@ -82,7 +82,7 @@ export default class VeracodeRESTClient {
 
   async findings(
     applicationGUID: string,
-    applicationName: string
+    applicationName: string,
   ): Promise<FindingEntity[]> {
     const findings = await this.list('findings', `applications/${applicationGUID}/`);
     return toFindingEntities(findings, applicationName);
