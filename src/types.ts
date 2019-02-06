@@ -1,5 +1,10 @@
 import { EntityFromIntegration } from '@jupiterone/jupiter-managed-integration-sdk/persister/types';
 
+export interface VeracodeIntegrationInstanceConfig {
+  veracodeApiId: string;
+  veracodeApiSecret: string;
+}
+
 export interface ApplicationEntity {
   guid: string;
   name: string;

@@ -1,5 +1,5 @@
 node_modules/
-work/
+build/
 coverage/
 dist/
 jupiterone-jupiter-managed-integration-sdk-*

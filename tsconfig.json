@@ -1,6 +1,7 @@
 {
+  "include": ["src/**/*", "tools/**/*", "test/**/*"],
   "compilerOptions": {
-    "outDir": "dist",
+    "outDir": "build",
     "noUnusedLocals": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
@@ -15,10 +16,5 @@
     "module": "commonjs",
     "pretty": true,
     "inlineSourceMap": true
-  },
-  "exclude": [
-    "**/*.test.ts",
-    "test",
-    "tools"
-  ]
+  }
 }

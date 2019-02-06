@@ -19,10 +19,6 @@ export default class VeracodeRESTClient {
   private axiosClient: AxiosInstance;
 
   constructor (axiosClient: AxiosInstance, apiId: string, apiSecretKey: string) {
-    if (apiId === undefined || apiSecretKey === undefined) {
-      throw new Error('apiId and apiSecretKey are required');
-    }
-
     this.apiId = apiId;
     this.apiSecretKey = apiSecretKey;
     this.axiosClient = axiosClient;

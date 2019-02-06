@@ -1,41 +1,42 @@
 {
   "name": "jupiter-integration-veracode",
   "version": "1.0.0",
-  "license": "MIT",
+  "description": "A JupiterOne managed integration for https://www.veracode.com",
+  "main": "index.js",
+  "repository": "https://github.com/jupiterone-io/managed-integration-veracode",
+  "license": "SEE LICENSE IN LICENSE",
   "scripts": {
     "start": "ts-node tools/execute.ts | bunyan",
     "start:graph": "docker run -d --rm --name jupiterone-local-graph -p 8182:8182 tinkerpop/gremlin-server:3.3",
     "stop:graph": "docker stop jupiterone-local-graph",
     "prebuild": "rm -rf dist/*",
-    "build": "yarn build:files && yarn build:types",
-    "build:files": "yarn babel src --out-dir dist --extensions '.ts' && ts-node tools/copy-dist-files.ts",
-    "build:types": "tsc --declaration --emitDeclarationOnly",
+    "build": "yarn build:types && yarn build:src && yarn build:files",
+    "build:src": "babel src --extensions '.ts' --out-dir dist",
+    "build:files": "ts-node tools/copy-dist-files.ts",
+    "build:types": "tsc --project tsconfig.dist.json --declaration --emitDeclarationOnly",
     "lint": "tslint --project .",
     "test": "jest"
   },
   "dependencies": {
-    "aws-sdk": "^2.396.0",
-    "aws-xray-sdk-core": "^2.2.0",
     "axios": "^0.18.0",
-    "bunyan": "^1.8.12",
-    "ts-node": "^8.0.2",
-    "typescript": "^3.3.1"
+    "bunyan": "^1.8.12"
   },
   "peerDependencies": {
-    "@jupiterone/jupiter-managed-integration-sdk": "^18.0.2"
+    "@jupiterone/jupiter-managed-integration-sdk": "^18.0.4"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
     "@babel/core": "^7.2.2",
     "@babel/preset-env": "^7.3.1",
     "@babel/preset-typescript": "^7.1.0",
-    "@jupiterone/jupiter-managed-integration-sdk": "file:jupiterone-jupiter-managed-integration-sdk-v18.0.2.tgz",
-    "@types/aws-lambda": "^8.10.18",
+    "@jupiterone/jupiter-managed-integration-sdk": "file:jupiterone-jupiter-managed-integration-sdk-v18.0.4.tgz",
     "@types/bunyan": "^1.8.5",
     "@types/jest": "^22.2.3",
     "@types/node": "^10.12.20",
     "jest": "^23.5.0",
     "ts-jest": "^23.10.5",
-    "ts-lint": "^4.5.1"
+    "ts-lint": "^4.5.1",
+    "ts-node": "^8.0.2",
+    "typescript": "^3.3.1"
   }
 }
