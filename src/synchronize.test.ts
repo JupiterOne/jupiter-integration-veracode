@@ -16,8 +16,8 @@ const mockAxiosClient = createMockAxiosClient(mockApplication, [mockFinding]);
 
 const persisterOperations = {
   created: 1,
-  updated: 0,
   deleted: 0,
+  updated: 0,
 };
 
 test('compiles and runs', async () => {

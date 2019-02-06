@@ -1,4 +1,7 @@
-import { IntegrationExecutionContext, IntegrationInvocationEvent } from '@jupiterone/jupiter-managed-integration-sdk/integration/types';
+import {
+  IntegrationExecutionContext,
+  IntegrationInvocationEvent,
+} from '@jupiterone/jupiter-managed-integration-sdk/integration/types';
 import { PersisterOperationsResult } from '@jupiterone/jupiter-managed-integration-sdk/persister/types';
 import axios from 'axios';
 import processFindings from './processFindings';

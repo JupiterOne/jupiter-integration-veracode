@@ -9,24 +9,24 @@ export const mockApplication = {
 };
 
 export const mockFinding = {
-  guid: 'another-guid',
-  severity: 3,
-  exploitability: 1,
+  cvss: 50,
   cwe: {
-    name: 'Very Bad Vulnerability',
     description: 'This vulnerability is very bad.',
+    name: 'Very Bad Vulnerability',
+    recommendation: 'Fix it!',
     references: [{
       name: 'Reference',
       url: 'https://somewhere.com',
     }],
-    recommendation: 'Fix it!',
   },
-  cvss: 50,
+  exploitability: 1,
+  guid: 'another-guid',
+  severity: 3,
 };
 
 export default function (application: ApplicationData, findings: FindingData[]) {
   return {
-    get: function (url: string, config: any) {
+    get(url: string, config: any) {
       switch (url) {
         case 'applications':
           return wrapVeracodeApiData({
@@ -40,6 +40,8 @@ export default function (application: ApplicationData, findings: FindingData[]) 
           return wrapVeracodeApiData({
             findings,
           });
+        default:
+          return { data: {} };
       }
     },
   };
