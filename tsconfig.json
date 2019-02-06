@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "outDir": "build",
+    "outDir": "dist",
     "noUnusedLocals": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
@@ -15,5 +15,10 @@
     "module": "commonjs",
     "pretty": true,
     "inlineSourceMap": true
-  }
+  },
+  "exclude": [
+    "**/*.test.ts",
+    "test",
+    "tools"
+  ]
 }
