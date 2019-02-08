@@ -1,17 +1,17 @@
-import { createTestIntegrationExecutionContext } from '@jupiterone/jupiter-managed-integration-sdk';
-import invocationValidator from './invocationValidator';
-import { VeracodeIntegrationInstanceConfig } from './types';
+import { createTestIntegrationExecutionContext } from "@jupiterone/jupiter-managed-integration-sdk";
+import invocationValidator from "./invocationValidator";
+import { VeracodeIntegrationInstanceConfig } from "./types";
 
-test('passes with valid config', async () => {
+test("passes with valid config", async () => {
   const config: VeracodeIntegrationInstanceConfig = {
-    veracodeApiId: 'api-id',
-    veracodeApiSecret: 'api-secret',
+    veracodeApiId: "api-id",
+    veracodeApiSecret: "api-secret"
   };
 
   const executionContext = createTestIntegrationExecutionContext({
     instance: {
-      config,
-    },
+      config
+    }
   });
 
   expect(() => {
@@ -19,20 +19,20 @@ test('passes with valid config', async () => {
   }).not.toThrow();
 });
 
-test('throws error if config not provided', async () => {
+test("throws error if config not provided", async () => {
   const executionContext = createTestIntegrationExecutionContext();
   expect(() => {
     invocationValidator(executionContext);
-  }).toThrow('Missing configuration');
+  }).toThrow("Missing configuration");
 });
 
-test('throws error if API id and secret are not provided in instance config', async () => {
+test("throws error if API id and secret are not provided in instance config", async () => {
   const executionContext = createTestIntegrationExecutionContext({
     instance: {
-      config: {},
-    },
+      config: {}
+    }
   });
   expect(() => {
     invocationValidator(executionContext);
-  }).toThrow('veracodeApiId and veracodeApiSecret are required');
+  }).toThrow("veracodeApiId and veracodeApiSecret are required");
 });

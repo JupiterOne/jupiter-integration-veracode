@@ -1,4 +1,4 @@
-import { EntityFromIntegration } from '@jupiterone/jupiter-managed-integration-sdk/persister/types';
+import { EntityFromIntegration } from "@jupiterone/jupiter-managed-integration-sdk/persister/types";
 
 export interface VeracodeIntegrationInstanceConfig {
   veracodeApiId: string;
