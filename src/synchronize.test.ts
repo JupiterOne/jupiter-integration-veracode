@@ -1,14 +1,9 @@
 import { createTestIntegrationExecutionContext } from "@jupiterone/jupiter-managed-integration-sdk";
-import axios from "axios";
-import createMockAxiosClient, {
-  mockApplication,
-  mockFinding
-} from "../test/helpers/createMockAxiosClient";
+import VeracodeClient from "@lifeomic/veracode-client-js";
+import mockVeracodeClient from "../test/helpers/mockVeracodeClient";
 import synchronize from "./synchronize";
 
-jest.mock("axios");
-
-const mockAxiosClient = createMockAxiosClient(mockApplication, [mockFinding]);
+jest.mock("@lifeomic/veracode-client-js");
 
 const persisterOperations = {
   created: 1,
@@ -17,7 +12,9 @@ const persisterOperations = {
 };
 
 test("compiles and runs", async () => {
-  (axios.create as jest.Mock).mockReturnValue(mockAxiosClient);
+  VeracodeClient.mockImplementation(() => {
+    return mockVeracodeClient;
+  });
   const executionContext = createTestIntegrationExecutionContext();
 
   executionContext.instance.config = {

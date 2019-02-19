@@ -3,23 +3,16 @@ import {
   IntegrationInvocationEvent
 } from "@jupiterone/jupiter-managed-integration-sdk/integration/types";
 import { PersisterOperationsResult } from "@jupiterone/jupiter-managed-integration-sdk/persister/types";
-import axios from "axios";
 import processFindings from "./processFindings";
 import { FindingEntity, VeracodeIntegrationInstanceConfig } from "./types";
-import VeracodeRESTClient from "./VeracodeRESTClient";
-import { VERA_API_BASE, VERA_HOST } from "./VeracodeRESTClient";
+import VeracodeClientWrapper from "./VeracodeClientWrapper";
 
 export default async function synchronize(
   context: IntegrationExecutionContext<IntegrationInvocationEvent>
 ): Promise<PersisterOperationsResult> {
   const config = context.instance.config as VeracodeIntegrationInstanceConfig;
 
-  const axiosClient = axios.create({
-    baseURL: `https://${VERA_HOST}${VERA_API_BASE}`
-  });
-
-  const veracode = new VeracodeRESTClient(
-    axiosClient,
+  const veracode = new VeracodeClientWrapper(
     config.veracodeApiId,
     config.veracodeApiSecret
   );
