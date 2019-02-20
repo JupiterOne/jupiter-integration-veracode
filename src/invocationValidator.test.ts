@@ -21,9 +21,9 @@ test("passes with valid config", async () => {
 
 test("throws error if config not provided", async () => {
   const executionContext = createTestIntegrationExecutionContext();
-  expect(() => {
-    invocationValidator(executionContext);
-  }).toThrow("Missing configuration");
+  await expect(invocationValidator(executionContext)).rejects.toThrow(
+    "Missing configuration"
+  );
 });
 
 test("throws error if API id and secret are not provided in instance config", async () => {
@@ -32,7 +32,7 @@ test("throws error if API id and secret are not provided in instance config", as
       config: {}
     }
   });
-  expect(() => {
-    invocationValidator(executionContext);
-  }).toThrow("veracodeApiId and veracodeApiSecret are required");
+  await expect(invocationValidator(executionContext)).rejects.toThrow(
+    "veracodeApiId and veracodeApiSecret are required"
+  );
 });
