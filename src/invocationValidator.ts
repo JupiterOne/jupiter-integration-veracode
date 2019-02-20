@@ -5,7 +5,7 @@ import {
 } from "@jupiterone/jupiter-managed-integration-sdk";
 import { VeracodeIntegrationInstanceConfig } from "./types";
 
-export default function invocationValidator(
+export default async function invocationValidator(
   context: IntegrationExecutionContext<IntegrationInvocationEvent>
 ) {
   const config = context.instance.config as VeracodeIntegrationInstanceConfig;
