@@ -1,9 +1,10 @@
 import { createTestIntegrationExecutionContext } from "@jupiterone/jupiter-managed-integration-sdk";
-import VeracodeClient from "@lifeomic/veracode-client-js";
 import mockVeracodeClient from "../test/helpers/mockVeracodeClient";
 import synchronize from "./synchronize";
 
-jest.mock("@lifeomic/veracode-client-js");
+jest.mock("@lifeomic/veracode-client-js", () => {
+  return jest.fn().mockImplementation(() => mockVeracodeClient);
+});
 
 const persisterOperations = {
   created: 1,
@@ -12,9 +13,6 @@ const persisterOperations = {
 };
 
 test("compiles and runs", async () => {
-  VeracodeClient.mockImplementation(() => {
-    return mockVeracodeClient;
-  });
   const executionContext = createTestIntegrationExecutionContext();
 
   executionContext.instance.config = {
