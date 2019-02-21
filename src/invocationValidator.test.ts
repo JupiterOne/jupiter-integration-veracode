@@ -5,13 +5,13 @@ import { VeracodeIntegrationInstanceConfig } from "./types";
 test("passes with valid config", async () => {
   const config: VeracodeIntegrationInstanceConfig = {
     veracodeApiId: "api-id",
-    veracodeApiSecret: "api-secret"
+    veracodeApiSecret: "api-secret",
   };
 
   const executionContext = createTestIntegrationExecutionContext({
     instance: {
-      config
-    }
+      config,
+    },
   });
 
   expect(() => {
@@ -22,17 +22,17 @@ test("passes with valid config", async () => {
 test("throws error if config not provided", async () => {
   const executionContext = createTestIntegrationExecutionContext();
   await expect(invocationValidator(executionContext)).rejects.toThrow(
-    "Missing configuration"
+    "Missing configuration",
   );
 });
 
 test("throws error if API id and secret are not provided in instance config", async () => {
   const executionContext = createTestIntegrationExecutionContext({
     instance: {
-      config: {}
-    }
+      config: {},
+    },
   });
   await expect(invocationValidator(executionContext)).rejects.toThrow(
-    "veracodeApiId and veracodeApiSecret are required"
+    "veracodeApiId and veracodeApiSecret are required",
   );
 });
