@@ -9,7 +9,7 @@ jest.mock("@lifeomic/veracode-client-js", () => {
 const persisterOperations = {
   created: 1,
   deleted: 0,
-  updated: 0
+  updated: 0,
 };
 
 test("compiles and runs", async () => {
@@ -17,7 +17,7 @@ test("compiles and runs", async () => {
 
   executionContext.instance.config = {
     veracodeApiId: "some-id",
-    veracodeApiSecret: "some-secret"
+    veracodeApiSecret: "some-secret",
   };
 
   jest
@@ -27,7 +27,7 @@ test("compiles and runs", async () => {
   jest
     .spyOn(
       executionContext.clients.getClients().persister,
-      "publishPersisterOperations"
+      "publishPersisterOperations",
     )
     .mockResolvedValue(persisterOperations);
 

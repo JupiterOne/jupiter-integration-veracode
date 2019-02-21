@@ -3,8 +3,8 @@ import { ApplicationData, FindingData } from "../../src/converters";
 const mockApplication: ApplicationData = {
   guid: "some-guid",
   profile: {
-    name: "my-app"
-  }
+    name: "my-app",
+  },
 };
 
 const mockFinding: FindingData = {
@@ -16,13 +16,13 @@ const mockFinding: FindingData = {
     references: [
       {
         name: "Reference",
-        url: "https://somewhere.com"
-      }
-    ]
+        url: "https://somewhere.com",
+      },
+    ],
   },
   exploitability: 1,
   guid: "another-guid",
-  severity: 3
+  severity: 3,
 };
 
 export default {
@@ -32,5 +32,5 @@ export default {
 
   getFindings() {
     return [mockFinding];
-  }
+  },
 };

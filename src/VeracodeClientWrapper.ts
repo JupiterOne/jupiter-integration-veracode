@@ -16,7 +16,7 @@ export default class VeracodeClientWrapper {
 
   public async findings(
     applicationGUID: string,
-    applicationName: string
+    applicationName: string,
   ): Promise<FindingEntity[]> {
     const findings = await this.veracodeClient.getFindings(applicationGUID);
     return toFindingEntities(findings, applicationName);
