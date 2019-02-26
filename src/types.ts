@@ -1,4 +1,7 @@
-import { EntityFromIntegration } from "@jupiterone/jupiter-managed-integration-sdk/persister/types";
+import {
+  EntityFromIntegration,
+  RelationshipFromIntegration,
+} from "@jupiterone/jupiter-managed-integration-sdk/persister/types";
 
 export interface VeracodeIntegrationInstanceConfig {
   veracodeApiId: string;
@@ -7,6 +10,13 @@ export interface VeracodeIntegrationInstanceConfig {
 
 export interface ApplicationEntity {
   guid: string;
+  name: string;
+}
+
+export type AccountEntity = EntityFromIntegration;
+
+export interface ServiceEntity extends EntityFromIntegration {
+  category: string;
   name: string;
 }
 
@@ -21,4 +31,9 @@ export interface FindingEntity extends EntityFromIntegration {
   recommendation: string;
   references: string[];
   severity: number;
+  scanType: string;
 }
+
+export type AccountServiceRelationship = RelationshipFromIntegration;
+
+export type ServiceVulnerabilityRelationship = RelationshipFromIntegration;

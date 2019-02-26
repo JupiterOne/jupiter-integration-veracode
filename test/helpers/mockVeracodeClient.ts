@@ -22,6 +22,7 @@ const mockFinding: FindingData = {
   },
   exploitability: 1,
   guid: "another-guid",
+  scan_type: "STATIC",
   severity: 3,
 };
 

@@ -3,7 +3,8 @@ import {
   IntegrationInvocationEvent,
 } from "@jupiterone/jupiter-managed-integration-sdk/integration/types";
 import { PersisterOperationsResult } from "@jupiterone/jupiter-managed-integration-sdk/persister/types";
-import processFindings from "./processFindings";
+import { toAccountEntity } from "./converters";
+import { processAccount, processFindings, processServices } from "./processors";
 import { FindingEntity, VeracodeIntegrationInstanceConfig } from "./types";
 import VeracodeClientWrapper from "./VeracodeClientWrapper";
 
@@ -17,8 +18,10 @@ export default async function synchronize(
     config.veracodeApiSecret,
   );
 
-  const findings = new Array<FindingEntity>();
   const applications = await veracode.applications();
+  const account = toAccountEntity(context.instance);
+
+  const findings = new Array<FindingEntity>();
   for (const application of applications) {
     findings.push(
       ...(await veracode.findings(application.guid, application.name)),
@@ -27,6 +30,8 @@ export default async function synchronize(
 
   const { persister } = context.clients.getClients();
   return persister.publishPersisterOperations(
+    await processAccount(context, account),
     await processFindings(context, findings),
+    await processServices(context, account, findings),
   );
 }
