@@ -83,6 +83,7 @@ export function toAccountEntity(instance: IntegrationInstance): AccountEntity {
     _key: instance.id,
     _type: "veracode_account",
     displayName: instance.name,
+    name: instance.name,
   };
 }
 

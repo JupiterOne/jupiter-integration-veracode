@@ -13,7 +13,9 @@ export interface ApplicationEntity {
   name: string;
 }
 
-export type AccountEntity = EntityFromIntegration;
+export interface AccountEntity extends EntityFromIntegration {
+  name: string;
+}
 
 export interface ServiceEntity extends EntityFromIntegration {
   category: string;
