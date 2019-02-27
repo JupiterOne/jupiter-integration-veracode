@@ -25,6 +25,10 @@ test("compiles and runs", async () => {
     .mockResolvedValue([]);
 
   jest
+    .spyOn(executionContext.clients.getClients().graph, "findRelationships")
+    .mockResolvedValue([]);
+
+  jest
     .spyOn(
       executionContext.clients.getClients().persister,
       "publishPersisterOperations",

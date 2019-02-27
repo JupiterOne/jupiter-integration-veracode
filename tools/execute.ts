@@ -19,6 +19,7 @@ async function run(): Promise<void> {
       integrationConfig,
       logger,
       executionHandler,
+      {},
       createLocalInvocationEvent(),
     ),
     "Execution completed successfully!",

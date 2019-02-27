@@ -1,4 +1,12 @@
-import { ApplicationEntity, FindingEntity } from "./types";
+import { IntegrationInstance } from "@jupiterone/jupiter-managed-integration-sdk";
+import {
+  AccountEntity,
+  AccountServiceRelationship,
+  ApplicationEntity,
+  FindingEntity,
+  ServiceEntity,
+  ServiceVulnerabilityRelationship,
+} from "./types";
 
 interface CWEReference {
   name: string;
@@ -18,6 +26,7 @@ export interface FindingData {
   exploitability: number;
   cwe: CWE;
   cvss?: number;
+  scan_type: string;
 }
 
 export function toFindingEntities(
@@ -39,6 +48,7 @@ export function toFindingEntities(
       public: false,
       recommendation: finding.cwe.recommendation,
       references: finding.cwe.references.map(r => r.url),
+      scanType: finding.scan_type,
       severity: finding.severity,
     });
   }
@@ -65,4 +75,53 @@ export function toApplicationEntities(
     });
   }
   return entities;
+}
+
+export function toAccountEntity(instance: IntegrationInstance): AccountEntity {
+  return {
+    _class: "Account",
+    _key: instance.id,
+    _type: "veracode_account",
+    displayName: instance.name,
+    name: instance.name,
+  };
+}
+
+export function toServiceEntity(scanType: string): ServiceEntity {
+  return {
+    _class: "Service",
+    _key: `veracode_scan_${scanType}`,
+    _type: "veracode_scan",
+    category: "software",
+    displayName: scanType,
+    name: scanType,
+  };
+}
+
+export function toAccountServiceRelationship(
+  accountEntity: AccountEntity,
+  serviceEntity: ServiceEntity,
+): AccountServiceRelationship {
+  return {
+    _class: "PROVIDES",
+    _key: `${accountEntity._key}|provides|${serviceEntity._key}`,
+    _type: "veracode_account_provides_service",
+
+    _fromEntityKey: accountEntity._key,
+    _toEntityKey: serviceEntity._key,
+  };
+}
+
+export function toServiceVulnerabilityRelationship(
+  serviceEntity: ServiceEntity,
+  findingEntity: FindingEntity,
+): ServiceVulnerabilityRelationship {
+  return {
+    _class: "IDENTIFIED",
+    _key: `${serviceEntity._key}|identified|${findingEntity._key}`,
+    _type: "veracode_scan_identified_finding",
+
+    _fromEntityKey: serviceEntity._key,
+    _toEntityKey: findingEntity._key,
+  };
 }

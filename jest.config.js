@@ -7,6 +7,7 @@ module.exports = {
   coveragePathIgnorePatterns: [
     "<rootDir>/src/index.ts",
     "<rootDir>/src/executionHandler.ts",
+    "<rootDir>/src/veracode-client-js.d.ts",
   ],
   moduleFileExtensions: ["ts", "js"],
   testEnvironment: "node",
