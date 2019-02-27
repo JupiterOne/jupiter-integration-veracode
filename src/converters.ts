@@ -42,6 +42,7 @@ export function toFindingEntities(
       category: "application",
       cvss: finding.cvss,
       description: finding.cwe.description,
+      displayName: finding.cwe.name,
       exploitability: finding.exploitability,
       impacts: [application],
       name: finding.cwe.name,
