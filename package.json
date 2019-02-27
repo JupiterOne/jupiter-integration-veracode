@@ -1,6 +1,6 @@
 {
   "name": "@jupiterone/jupiter-integration-veracode",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A JupiterOne managed integration for https://www.veracode.com",
   "main": "index.js",
   "repository": "https://github.com/jupiterone-io/managed-integration-veracode",
