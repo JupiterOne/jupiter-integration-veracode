@@ -713,10 +713,10 @@
     log-update "^2.3.0"
     strip-ansi "^3.0.1"
 
-"@jupiterone/jupiter-managed-integration-sdk@^19.1.0":
-  version "19.1.0"
-  resolved "https://registry.npmjs.org/@jupiterone/jupiter-managed-integration-sdk/-/jupiter-managed-integration-sdk-19.1.0.tgz#b69ba00dff4f7fd72cbf1d84026f4befc4cce2a4"
-  integrity sha512-0b+dK9XZj4C2eaSyodKtp8xLOe+pMvwW8NrxIpAkNU8zQEfhkziaQbonINpI0LJSbdekmYZAWWHmjh4ggq7HsQ==
+"@jupiterone/jupiter-managed-integration-sdk@^19.1.1":
+  version "19.1.1"
+  resolved "https://registry.npmjs.org/@jupiterone/jupiter-managed-integration-sdk/-/jupiter-managed-integration-sdk-19.1.1.tgz#60df082e1e35b44b46a36a790e5c03dd712ce740"
+  integrity sha512-MklirHgF97EvuYmqPuQtpkeOP86lgng6l/JZ10+JeKmRRrQXpCwC999htHLHF4x+FV1OimPpXiQV1s91EoTxdw==
 
 "@lifeomic/veracode-client-js@^0.1.1":
   version "0.1.1"

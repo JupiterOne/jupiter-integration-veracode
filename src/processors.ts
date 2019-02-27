@@ -1,16 +1,12 @@
 import {
+  EntityFromIntegration,
   EntityOperation,
-  RelationshipOperation,
-} from "@jupiterone/jupiter-managed-integration-sdk";
-import {
   IntegrationExecutionContext,
   IntegrationInvocationEvent,
-} from "@jupiterone/jupiter-managed-integration-sdk/integration/types";
-import {
-  EntityFromIntegration,
   PersisterOperations,
   RelationshipFromIntegration,
-} from "@jupiterone/jupiter-managed-integration-sdk/persister/types";
+  RelationshipOperation,
+} from "@jupiterone/jupiter-managed-integration-sdk";
 import {
   toAccountServiceRelationship,
   toServiceEntity,
@@ -52,7 +48,7 @@ export async function processServices(
   findingEntities: FindingEntity[],
 ): Promise<PersisterOperations> {
   const serviceEntitiesTypeMap: any = {};
-  const accountServiceRelationships = new Array<AccountServiceRelationship>();
+  const accountServiceRelationships: AccountServiceRelationship[] = [];
   const serviceVulnerabilityRelationships = new Array<
     ServiceVulnerabilityRelationship
   >();
@@ -106,8 +102,8 @@ async function toEntityOperations<T extends EntityFromIntegration>(
 
   const oldEntities = await graph.findEntities({
     _accountId: context.instance.accountId,
+    _deleted: false,
     _integrationInstanceId: context.instance.id,
-    _latest: true,
     _type: type,
   });
 
