@@ -104,9 +104,9 @@ export function toAccountServiceRelationship(
   serviceEntity: ServiceEntity,
 ): AccountServiceRelationship {
   return {
-    _class: "PROVIDES",
-    _key: `${accountEntity._key}|provides|${serviceEntity._key}`,
-    _type: "veracode_account_provides_service",
+    _class: "HAS",
+    _key: `${accountEntity._key}|has|${serviceEntity._key}`,
+    _type: "veracode_account_has_service",
 
     _fromEntityKey: accountEntity._key,
     _toEntityKey: serviceEntity._key,
