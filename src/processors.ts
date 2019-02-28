@@ -81,7 +81,7 @@ export async function processServices(
     ...(await toRelationshipOperations(
       context,
       accountServiceRelationships,
-      "veracode_account_provides_service",
+      "veracode_account_has_service",
     )),
     ...(await toRelationshipOperations(
       context,
