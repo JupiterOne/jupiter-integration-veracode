@@ -2,7 +2,7 @@ import { createTestIntegrationExecutionContext } from "@jupiterone/jupiter-manag
 import mockVeracodeClient from "../test/helpers/mockVeracodeClient";
 import synchronize from "./synchronize";
 
-jest.mock("@lifeomic/veracode-client-js", () => {
+jest.mock("@jupiterone/veracode-client", () => {
   return jest.fn().mockImplementation(() => mockVeracodeClient);
 });
 
