@@ -2,7 +2,6 @@ import { IntegrationInstance } from "@jupiterone/jupiter-managed-integration-sdk
 import {
   AccountEntity,
   AccountServiceRelationship,
-  ApplicationEntity,
   CWEEntityMap,
   FindingEntity,
   ServiceEntity,
@@ -22,26 +21,6 @@ interface CWEData {
   recommendation: string;
   remediation_effort: number;
   severity: number;
-}
-
-export function toCWEEntityMap(findings: FindingData[]): CWEEntityMap {
-  const cwes: CWEEntityMap = {};
-  for (const finding of findings) {
-    cwes[finding.cwe.id] = {
-      _class: "Weakness",
-      _key: finding.cwe.id.toString(),
-      _type: "cwe",
-      description: finding.cwe.description,
-      displayName: finding.cwe.name,
-      id: finding.cwe.id,
-      name: finding.cwe.name,
-      recommendation: finding.cwe.recommendation,
-      references: finding.cwe.references.map(r => r.url),
-      remediationEffort: finding.cwe.remediation_effort,
-      severity: finding.cwe.severity,
-    };
-  }
-  return cwes;
 }
 
 interface FindingStatus {
@@ -66,13 +45,43 @@ export interface FindingData {
   scan_type: string;
 }
 
-export function toFindingEntities(
+interface ApplicationProfile {
+  name: string;
+}
+
+export interface ApplicationData {
+  guid: string;
+  profile: ApplicationProfile;
+}
+
+interface FromFindings {
+  cweMap: CWEEntityMap;
+  findingEntities: FindingEntity[];
+}
+
+export function fromFindings(
   findings: FindingData[],
-  application: string,
-): FindingEntity[] {
-  const entities = new Array<FindingEntity>();
+  application: ApplicationData,
+): FromFindings {
+  const cweMap: CWEEntityMap = {};
+  const findingEntities: FindingEntity[] = [];
+
   for (const finding of findings) {
-    entities.push({
+    cweMap[finding.cwe.id] = {
+      _class: "Weakness",
+      _key: finding.cwe.id.toString(),
+      _type: "cwe",
+      description: finding.cwe.description,
+      displayName: finding.cwe.name,
+      id: finding.cwe.id,
+      name: finding.cwe.name,
+      recommendation: finding.cwe.recommendation,
+      references: finding.cwe.references.map(r => r.url),
+      remediationEffort: finding.cwe.remediation_effort,
+      severity: finding.cwe.severity,
+    };
+
+    findingEntities.push({
       _class: "Vulnerability",
       _key: finding.guid,
       _type: "veracode_finding",
@@ -82,7 +91,7 @@ export function toFindingEntities(
       description: finding.description,
       displayName: finding.cwe.name, // We're using the name of the weakness because Veracode provides no other name.
       exploitability: finding.exploitability,
-      impacts: [application],
+      impacts: [application.profile.name],
       name: finding.cwe.name,
       public: false,
       scanType: finding.scan_type,
@@ -99,29 +108,8 @@ export function toFindingEntities(
       resolvedDate: finding.finding_status.resolved_date,
     });
   }
-  return entities;
-}
 
-interface ApplicationProfile {
-  name: string;
-}
-
-export interface ApplicationData {
-  guid: string;
-  profile: ApplicationProfile;
-}
-
-export function toApplicationEntities(
-  applications: ApplicationData[],
-): ApplicationEntity[] {
-  const entities = new Array<ApplicationEntity>();
-  for (const application of applications) {
-    entities.push({
-      guid: application.guid,
-      name: application.profile.name,
-    });
-  }
-  return entities;
+  return { cweMap, findingEntities };
 }
 
 export function toAccountEntity(instance: IntegrationInstance): AccountEntity {

@@ -9,11 +9,6 @@ export interface VeracodeIntegrationInstanceConfig {
   veracodeApiSecret: string;
 }
 
-export interface ApplicationEntity {
-  guid: string;
-  name: string;
-}
-
 export interface AccountEntity extends EntityFromIntegration {
   name: string;
 }
