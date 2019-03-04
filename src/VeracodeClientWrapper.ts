@@ -1,4 +1,4 @@
-import VeracodeClient from "@lifeomic/veracode-client-js";
+import VeracodeClient from "@jupiterone/veracode-client";
 import { toApplicationEntities, toFindingEntities } from "./converters";
 import { ApplicationEntity, FindingEntity } from "./types";
 
