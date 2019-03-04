@@ -1,11 +1,14 @@
 import {
+  CreateMappedRelationshipOperation,
   EntityFromIntegration,
   EntityOperation,
   IntegrationExecutionContext,
   IntegrationInvocationEvent,
   PersisterOperations,
+  RelationshipDirection,
   RelationshipFromIntegration,
   RelationshipOperation,
+  RelationshipOperationType,
 } from "@jupiterone/jupiter-managed-integration-sdk";
 import {
   toAccountServiceRelationship,
@@ -15,6 +18,7 @@ import {
 import {
   AccountEntity,
   AccountServiceRelationship,
+  CWEEntity,
   FindingEntity,
   ServiceEntity,
   ServiceVulnerabilityRelationship,
@@ -25,10 +29,28 @@ type Context = IntegrationExecutionContext<IntegrationInvocationEvent>;
 export async function processFindings(
   context: Context,
   findingEntities: FindingEntity[],
+  cweMap: { [id: string]: CWEEntity },
 ): Promise<PersisterOperations> {
+  const mappedRelationshipOperations: CreateMappedRelationshipOperation[] = [];
+
+  for (const finding of findingEntities) {
+    const cwe = cweMap[finding.cwe];
+
+    mappedRelationshipOperations.push({
+      relationshipDirection: RelationshipDirection.FORWARD,
+      relationshipKey: cwe.id,
+      relationshipType: "EXPLOITS",
+      sourceEntityKey: finding._key,
+      targetEntity: cwe,
+      targetFilterKeys: [["id", cwe.id]],
+      timestamp: context.event.timestamp,
+      type: RelationshipOperationType.CREATE_MAPPED_RELATIONSHIP,
+    });
+  }
+
   return [
     await toEntityOperations(context, findingEntities, "veracode_finding"),
-    [],
+    mappedRelationshipOperations,
   ];
 }
 

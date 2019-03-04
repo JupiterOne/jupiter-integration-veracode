@@ -11,6 +11,7 @@ const mockFinding: FindingData = {
   cvss: 50,
   cwe: {
     description: "This vulnerability is very bad.",
+    id: "123",
     name: "Very Bad Vulnerability",
     recommendation: "Fix it!",
     references: [
@@ -19,8 +20,19 @@ const mockFinding: FindingData = {
         url: "https://somewhere.com",
       },
     ],
+    remediation_effort: 4,
+    severity: 3,
   },
   exploitability: 1,
+  finding_status: {
+    reopened: false,
+    resolution: "UNRESOLVED",
+    resolution_status: "NONE",
+    status: "OPEN",
+
+    found_date: Date.now().toString(),
+    modified_date: Date.now().toString(),
+  },
   guid: "another-guid",
   scan_type: "STATIC",
   severity: 3,

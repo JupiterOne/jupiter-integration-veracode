@@ -3,6 +3,7 @@ import {
   AccountEntity,
   AccountServiceRelationship,
   ApplicationEntity,
+  CWEEntityMap,
   FindingEntity,
   ServiceEntity,
   ServiceVulnerabilityRelationship,
@@ -13,19 +14,55 @@ interface CWEReference {
   url: string;
 }
 
-interface CWE {
+interface CWEData {
+  id: string;
   name: string;
   description: string;
   references: CWEReference[];
   recommendation: string;
+  remediation_effort: number;
+  severity: number;
+}
+
+export function toCWEEntityMap(findings: FindingData[]): CWEEntityMap {
+  const cwes: CWEEntityMap = {};
+  for (const finding of findings) {
+    cwes[finding.cwe.id] = {
+      _class: "Weakness",
+      _key: finding.cwe.id.toString(),
+      _type: "cwe",
+      description: finding.cwe.description,
+      displayName: finding.cwe.name,
+      id: finding.cwe.id,
+      name: finding.cwe.name,
+      recommendation: finding.cwe.recommendation,
+      references: finding.cwe.references.map(r => r.url),
+      remediationEffort: finding.cwe.remediation_effort,
+      severity: finding.cwe.severity,
+    };
+  }
+  return cwes;
+}
+
+interface FindingStatus {
+  status: string;
+  reopened: boolean;
+  resolution: string;
+  resolution_status: string;
+  found_date: string;
+  resolved_date?: string;
+  reopened_date?: string;
+  modified_date: string;
 }
 
 export interface FindingData {
+  cvss?: number;
+  cwe: CWEData;
+  description?: string;
+  exploitability: number;
+  finding_status: FindingStatus;
   guid: string;
   severity: number;
-  exploitability: number;
-  cwe: CWE;
-  cvss?: number;
   scan_type: string;
 }
 
@@ -41,16 +78,25 @@ export function toFindingEntities(
       _type: "veracode_finding",
       category: "application",
       cvss: finding.cvss,
-      description: finding.cwe.description,
-      displayName: finding.cwe.name,
+      cwe: finding.cwe.id,
+      description: finding.description,
+      displayName: finding.cwe.name, // We're using the name of the weakness because Veracode provides no other name.
       exploitability: finding.exploitability,
       impacts: [application],
       name: finding.cwe.name,
       public: false,
-      recommendation: finding.cwe.recommendation,
-      references: finding.cwe.references.map(r => r.url),
       scanType: finding.scan_type,
       severity: finding.severity,
+
+      open: finding.finding_status.status === "OPEN",
+      reopened: finding.finding_status.reopened,
+      resolution: finding.finding_status.resolution,
+      resolutionStatus: finding.finding_status.resolution_status,
+
+      foundDate: finding.finding_status.found_date,
+      modifiedDate: finding.finding_status.modified_date,
+      reopenedDate: finding.finding_status.reopened_date,
+      resolvedDate: finding.finding_status.resolved_date,
     });
   }
   return entities;

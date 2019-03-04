@@ -1,7 +1,8 @@
 import {
   EntityFromIntegration,
   RelationshipFromIntegration,
-} from "@jupiterone/jupiter-managed-integration-sdk/persister/types";
+  TargetEntityProperties,
+} from "@jupiterone/jupiter-managed-integration-sdk";
 
 export interface VeracodeIntegrationInstanceConfig {
   veracodeApiId: string;
@@ -25,15 +26,38 @@ export interface ServiceEntity extends EntityFromIntegration {
 export interface FindingEntity extends EntityFromIntegration {
   category: string;
   cvss?: number;
-  description: string;
+  cwe: string;
+  description?: string;
   exploitability: number;
   impacts: string[];
   name: string;
   public: boolean;
-  recommendation: string;
-  references: string[];
   severity: number;
   scanType: string;
+
+  open: boolean;
+  reopened: boolean;
+  resolution: string;
+  resolutionStatus: string;
+
+  foundDate: string;
+  modifiedDate: string;
+  reopenedDate?: string;
+  resolvedDate?: string;
+}
+
+export interface CWEEntityMap {
+  [id: string]: CWEEntity;
+}
+
+export interface CWEEntity extends TargetEntityProperties {
+  id: string;
+  description: string;
+  name: string;
+  recommendation: string;
+  references: string[];
+  remediationEffort: number;
+  severity: number;
 }
 
 export type AccountServiceRelationship = RelationshipFromIntegration;
