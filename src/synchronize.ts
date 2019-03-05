@@ -5,7 +5,7 @@ import {
 import { PersisterOperationsResult } from "@jupiterone/jupiter-managed-integration-sdk/persister/types";
 import VeracodeClient from "@jupiterone/veracode-client";
 import { fromFindings, toAccountEntity } from "./converters";
-import { processAccount, processFindings, processServices } from "./processors";
+import { processAccount, processFindings } from "./processors";
 import {
   CWEEntityMap,
   FindingEntity,
@@ -31,7 +31,7 @@ export default async function synchronize(
     const { cweMap: appCWEMap, findingEntities } = fromFindings(
       await veracode.getFindings(application.guid),
       application,
-    ); // findings loop counter: 1
+    );
 
     findings.push(...findingEntities);
     cweMap = { ...cweMap, ...appCWEMap };
@@ -40,7 +40,6 @@ export default async function synchronize(
   const { persister } = context.clients.getClients();
   return persister.publishPersisterOperations(
     await processAccount(context, account),
-    await processFindings(context, findings, cweMap), // findings loop counter: 2
-    await processServices(context, account, findings), // findings loop counter: 3
+    await processFindings(context, account, findings, cweMap),
   );
 }
