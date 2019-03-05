@@ -2,7 +2,7 @@ import { IntegrationInstance } from "@jupiterone/jupiter-managed-integration-sdk
 import {
   AccountEntity,
   AccountServiceRelationship,
-  ApplicationEntity,
+  CWEEntityMap,
   FindingEntity,
   ServiceEntity,
   ServiceVulnerabilityRelationship,
@@ -13,47 +13,36 @@ interface CWEReference {
   url: string;
 }
 
-interface CWE {
+interface CWEData {
+  id: string;
   name: string;
   description: string;
   references: CWEReference[];
   recommendation: string;
+  remediation_effort: number;
+  severity: number;
+}
+
+interface FindingStatus {
+  status: string;
+  reopened: boolean;
+  resolution: string;
+  resolution_status: string;
+  found_date: string;
+  resolved_date?: string;
+  reopened_date?: string;
+  modified_date: string;
 }
 
 export interface FindingData {
+  cvss?: number;
+  cwe: CWEData;
+  description?: string;
+  exploitability: number;
+  finding_status: FindingStatus;
   guid: string;
   severity: number;
-  exploitability: number;
-  cwe: CWE;
-  cvss?: number;
   scan_type: string;
-}
-
-export function toFindingEntities(
-  findings: FindingData[],
-  application: string,
-): FindingEntity[] {
-  const entities = new Array<FindingEntity>();
-  for (const finding of findings) {
-    entities.push({
-      _class: "Vulnerability",
-      _key: finding.guid,
-      _type: "veracode_finding",
-      category: "application",
-      cvss: finding.cvss,
-      description: finding.cwe.description,
-      displayName: finding.cwe.name,
-      exploitability: finding.exploitability,
-      impacts: [application],
-      name: finding.cwe.name,
-      public: false,
-      recommendation: finding.cwe.recommendation,
-      references: finding.cwe.references.map(r => r.url),
-      scanType: finding.scan_type,
-      severity: finding.severity,
-    });
-  }
-  return entities;
 }
 
 interface ApplicationProfile {
@@ -65,17 +54,62 @@ export interface ApplicationData {
   profile: ApplicationProfile;
 }
 
-export function toApplicationEntities(
-  applications: ApplicationData[],
-): ApplicationEntity[] {
-  const entities = new Array<ApplicationEntity>();
-  for (const application of applications) {
-    entities.push({
-      guid: application.guid,
-      name: application.profile.name,
+interface FromFindings {
+  cweMap: CWEEntityMap;
+  findingEntities: FindingEntity[];
+}
+
+export function fromFindings(
+  findings: FindingData[],
+  application: ApplicationData,
+): FromFindings {
+  const cweMap: CWEEntityMap = {};
+  const findingEntities: FindingEntity[] = [];
+
+  for (const finding of findings) {
+    cweMap[finding.cwe.id] = {
+      _class: "Weakness",
+      _key: finding.cwe.id.toString(),
+      _type: "cwe",
+      description: finding.cwe.description,
+      displayName: finding.cwe.name,
+      id: finding.cwe.id,
+      name: finding.cwe.name,
+      recommendation: finding.cwe.recommendation,
+      references: finding.cwe.references.map(r => r.url),
+      remediationEffort: finding.cwe.remediation_effort,
+      severity: finding.cwe.severity,
+    };
+
+    findingEntities.push({
+      _class: "Vulnerability",
+      _key: finding.guid,
+      _type: "veracode_finding",
+      category: "application",
+      cvss: finding.cvss,
+      cwe: finding.cwe.id,
+      description: finding.description,
+      displayName: finding.cwe.name, // We're using the name of the weakness because Veracode provides no other name.
+      exploitability: finding.exploitability,
+      impacts: [application.profile.name],
+      name: finding.cwe.name,
+      public: false,
+      scanType: finding.scan_type,
+      severity: finding.severity,
+
+      open: finding.finding_status.status === "OPEN",
+      reopened: finding.finding_status.reopened,
+      resolution: finding.finding_status.resolution,
+      resolutionStatus: finding.finding_status.resolution_status,
+
+      foundDate: finding.finding_status.found_date,
+      modifiedDate: finding.finding_status.modified_date,
+      reopenedDate: finding.finding_status.reopened_date,
+      resolvedDate: finding.finding_status.resolved_date,
     });
   }
-  return entities;
+
+  return { cweMap, findingEntities };
 }
 
 export function toAccountEntity(instance: IntegrationInstance): AccountEntity {
