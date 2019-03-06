@@ -59,9 +59,10 @@ export async function processFindings(
     const cwe = cweMap[finding.cwe];
 
     mappedRelationshipOperations.push({
+      relationshipClass: "EXPLOITS",
       relationshipDirection: RelationshipDirection.FORWARD,
-      relationshipKey: cwe.id,
-      relationshipType: "EXPLOITS",
+      relationshipKey: `${finding._key}|exploits|${cwe._key}`,
+      relationshipType: `veracode_finding_exploits_cwe`,
       sourceEntityKey: finding._key,
       targetEntity: cwe,
       targetFilterKeys: [["id", cwe.id]],
