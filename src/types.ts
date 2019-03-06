@@ -1,6 +1,7 @@
 import {
   EntityFromIntegration,
   RelationshipFromIntegration,
+  RelationshipMapping,
   TargetEntityProperties,
 } from "@jupiterone/jupiter-managed-integration-sdk";
 
@@ -58,3 +59,7 @@ export interface CWEEntity extends TargetEntityProperties {
 export type AccountServiceRelationship = RelationshipFromIntegration;
 
 export type ServiceVulnerabilityRelationship = RelationshipFromIntegration;
+
+export interface FindingCWERelationship extends RelationshipFromIntegration {
+  _mapping: RelationshipMapping;
+}

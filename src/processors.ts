@@ -1,17 +1,15 @@
 import {
-  CreateMappedRelationshipOperation,
   EntityFromIntegration,
   EntityOperation,
   IntegrationExecutionContext,
   IntegrationInvocationEvent,
   PersisterOperations,
-  RelationshipDirection,
   RelationshipFromIntegration,
   RelationshipOperation,
-  RelationshipOperationType,
 } from "@jupiterone/jupiter-managed-integration-sdk";
 import {
   toAccountServiceRelationship,
+  toFindingCWERelationship,
   toServiceEntity,
   toServiceVulnerabilityRelationship,
 } from "./converters";
@@ -19,6 +17,7 @@ import {
   AccountEntity,
   AccountServiceRelationship,
   CWEEntityMap,
+  FindingCWERelationship,
   FindingEntity,
   ServiceEntity,
   ServiceVulnerabilityRelationship,
@@ -37,7 +36,7 @@ export async function processFindings(
   const serviceVulnerabilityRelationships = new Array<
     ServiceVulnerabilityRelationship
   >();
-  const mappedRelationshipOperations: CreateMappedRelationshipOperation[] = [];
+  const findingCWERelationships: FindingCWERelationship[] = [];
 
   for (const finding of findingEntities) {
     const scanType = finding.scanType.toLowerCase();
@@ -57,33 +56,19 @@ export async function processFindings(
     );
 
     const cwe = cweMap[finding.cwe];
-
-    mappedRelationshipOperations.push({
-      relationshipClass: "EXPLOITS",
-      relationshipDirection: RelationshipDirection.FORWARD,
-      relationshipKey: `${finding._key}|exploits|${cwe._key}`,
-      relationshipType: `veracode_finding_exploits_cwe`,
-      sourceEntityKey: finding._key,
-      targetEntity: cwe,
-      targetFilterKeys: [["id", cwe.id]],
-      timestamp: context.event.timestamp,
-      type: RelationshipOperationType.CREATE_MAPPED_RELATIONSHIP,
-    });
+    findingCWERelationships.push(toFindingCWERelationship(finding, cwe));
   }
 
-  const findingEntityOperations = await toEntityOperations(
-    context,
-    findingEntities,
-    "veracode_finding",
-  );
+  const entities = [
+    ...(await toEntityOperations(context, findingEntities, "veracode_finding")),
+    ...(await toEntityOperations(
+      context,
+      Object.values(serviceEntitiesTypeMap) as ServiceEntity[],
+      "veracode_scan",
+    )),
+  ];
 
-  const serviceEntityOperations = await toEntityOperations(
-    context,
-    Object.values(serviceEntitiesTypeMap) as ServiceEntity[],
-    "veracode_scan",
-  );
-
-  const serviceRelationships = [
+  const relationships = [
     ...(await toRelationshipOperations(
       context,
       accountServiceRelationships,
@@ -94,12 +79,14 @@ export async function processFindings(
       serviceVulnerabilityRelationships,
       "veracode_scan_identified_finding",
     )),
+    ...(await toRelationshipOperations(
+      context,
+      findingCWERelationships,
+      "veracode_finding_exploits_cwe",
+    )),
   ];
 
-  return [
-    [...findingEntityOperations, ...serviceEntityOperations],
-    [...mappedRelationshipOperations, ...serviceRelationships],
-  ];
+  return [entities, relationships];
 }
 
 export async function processAccount(

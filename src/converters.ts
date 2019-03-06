@@ -1,8 +1,13 @@
-import { IntegrationInstance } from "@jupiterone/jupiter-managed-integration-sdk";
+import {
+  IntegrationInstance,
+  RelationshipDirection,
+} from "@jupiterone/jupiter-managed-integration-sdk";
 import {
   AccountEntity,
   AccountServiceRelationship,
+  CWEEntity,
   CWEEntityMap,
+  FindingCWERelationship,
   FindingEntity,
   ServiceEntity,
   ServiceVulnerabilityRelationship,
@@ -158,5 +163,28 @@ export function toServiceVulnerabilityRelationship(
 
     _fromEntityKey: serviceEntity._key,
     _toEntityKey: findingEntity._key,
+  };
+}
+
+export function toFindingCWERelationship(
+  findingEntity: FindingEntity,
+  cweEntity: CWEEntity,
+): FindingCWERelationship {
+  return {
+    _class: "EXPLOITS",
+    _key: `${findingEntity._key}|exploits|${cweEntity._key}`,
+    _type: `veracode_finding_exploits_cwe`,
+
+    _fromEntityKey: findingEntity._key,
+    _toEntityKey: cweEntity._key as string,
+
+    _mapping: {
+      relationshipDirection: RelationshipDirection.FORWARD,
+      sourceEntityKey: findingEntity._key,
+      targetEntity: cweEntity,
+      targetFilterKeys: [["id", cweEntity.id]],
+    },
+
+    displayName: "EXPLOITS",
   };
 }
