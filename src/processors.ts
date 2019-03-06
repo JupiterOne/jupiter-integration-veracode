@@ -59,7 +59,7 @@ export async function processFindings(
     findingCWERelationships.push(toFindingCWERelationship(finding, cwe));
   }
 
-  const entities = [
+  const entityOperations = [
     ...(await toEntityOperations(context, findingEntities, "veracode_finding")),
     ...(await toEntityOperations(
       context,
@@ -68,7 +68,7 @@ export async function processFindings(
     )),
   ];
 
-  const relationships = [
+  const relationshipOperations = [
     ...(await toRelationshipOperations(
       context,
       accountServiceRelationships,
@@ -86,7 +86,7 @@ export async function processFindings(
     )),
   ];
 
-  return [entities, relationships];
+  return [entityOperations, relationshipOperations];
 }
 
 export async function processAccount(
