@@ -8,8 +8,10 @@ import { fromFindings, toAccountEntity } from "./converters";
 import { processAccount, processFindings } from "./processors";
 import {
   CWEEntityMap,
-  FindingEntity,
+  FindingEntityMap,
+  ServiceEntityMap,
   VeracodeIntegrationInstanceConfig,
+  VulnerabilityEntity,
 } from "./types";
 
 export default async function synchronize(
@@ -25,21 +27,34 @@ export default async function synchronize(
   const applications = await veracode.getApplications();
   const account = toAccountEntity(context.instance);
 
-  const findings: FindingEntity[] = [];
+  const vulnerabilities: VulnerabilityEntity[] = [];
   let cweMap: CWEEntityMap = {};
+  let serviceMap: ServiceEntityMap = {};
+  let findingMap: FindingEntityMap = {};
   for (const application of applications) {
-    const { cweMap: appCWEMap, findingEntities } = fromFindings(
-      await veracode.getFindings(application.guid),
-      application,
-    );
+    const {
+      vulnerabilities: appVulnerabilities,
+      cweMap: appCWEMap,
+      serviceMap: appServiceMap,
+      findingMap: appFindingMap,
+    } = fromFindings(await veracode.getFindings(application.guid), application);
 
-    findings.push(...findingEntities);
+    vulnerabilities.push(...appVulnerabilities);
     cweMap = { ...cweMap, ...appCWEMap };
+    serviceMap = { ...serviceMap, ...appServiceMap };
+    findingMap = { ...findingMap, ...appFindingMap };
   }
 
   const { persister } = context.clients.getClients();
   return persister.publishPersisterOperations(
     await processAccount(context, account),
-    await processFindings(context, account, findings, cweMap),
+    await processFindings(
+      context,
+      account,
+      vulnerabilities,
+      cweMap,
+      serviceMap,
+      findingMap,
+    ),
   );
 }

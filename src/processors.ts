@@ -9,18 +9,21 @@ import {
 } from "@jupiterone/jupiter-managed-integration-sdk";
 import {
   toAccountServiceRelationship,
-  toFindingCWERelationship,
-  toServiceEntity,
   toServiceVulnerabilityRelationship,
+  toVulnerabilityCWERelationship,
+  toVulnerabilityFindingRelationship,
 } from "./converters";
 import {
   AccountEntity,
   AccountServiceRelationship,
   CWEEntityMap,
-  FindingCWERelationship,
   FindingEntity,
-  ServiceEntity,
+  FindingEntityMap,
+  ServiceEntityMap,
   ServiceVulnerabilityRelationship,
+  VulnerabilityCWERelationship,
+  VulnerabilityEntity,
+  VulnerabilityFindingRelationship,
 } from "./types";
 
 type Context = IntegrationExecutionContext<IntegrationInvocationEvent>;
@@ -28,44 +31,58 @@ type Context = IntegrationExecutionContext<IntegrationInvocationEvent>;
 export async function processFindings(
   context: Context,
   accountEntity: AccountEntity,
-  findingEntities: FindingEntity[],
+  vulnerabilityEntities: VulnerabilityEntity[],
   cweMap: CWEEntityMap,
+  serviceMap: ServiceEntityMap,
+  findingMap: FindingEntityMap,
 ): Promise<PersisterOperations> {
-  const serviceEntitiesTypeMap: any = {};
   const accountServiceRelationships: AccountServiceRelationship[] = [];
   const serviceVulnerabilityRelationships = new Array<
     ServiceVulnerabilityRelationship
   >();
-  const findingCWERelationships: FindingCWERelationship[] = [];
+  const vulnerabilityCWERelationships: VulnerabilityCWERelationship[] = [];
+  const vulnerabilityFindingRelationships: VulnerabilityFindingRelationship[] = [];
 
-  for (const finding of findingEntities) {
-    const scanType = finding.scanType.toLowerCase();
-    let service = serviceEntitiesTypeMap[scanType];
+  const findingEntities: FindingEntity[] = [];
 
-    if (!service) {
-      const serviceEntity = toServiceEntity(scanType);
-      serviceEntitiesTypeMap[scanType] = serviceEntity;
-      service = serviceEntity;
-      accountServiceRelationships.push(
-        toAccountServiceRelationship(accountEntity, serviceEntity),
-      );
-    }
+  for (const serviceEntity of Object.values(serviceMap)) {
+    accountServiceRelationships.push(
+      toAccountServiceRelationship(accountEntity, serviceEntity),
+    );
+  }
 
+  for (const vulnerability of vulnerabilityEntities) {
+    const service = serviceMap[vulnerability.scanType];
     serviceVulnerabilityRelationships.push(
-      toServiceVulnerabilityRelationship(service, finding),
+      toServiceVulnerabilityRelationship(service, vulnerability),
     );
 
-    const cwe = cweMap[finding.cwe];
-    findingCWERelationships.push(toFindingCWERelationship(finding, cwe));
+    const cwe = cweMap[vulnerability.cwe];
+    vulnerabilityCWERelationships.push(
+      toVulnerabilityCWERelationship(vulnerability, cwe),
+    );
+
+    const findings = findingMap[vulnerability.id];
+    for (const finding of findings) {
+      findingEntities.push(finding);
+      vulnerabilityFindingRelationships.push(
+        toVulnerabilityFindingRelationship(vulnerability, finding),
+      );
+    }
   }
 
   const entityOperations = [
-    ...(await toEntityOperations(context, findingEntities, "veracode_finding")),
     ...(await toEntityOperations(
       context,
-      Object.values(serviceEntitiesTypeMap) as ServiceEntity[],
+      vulnerabilityEntities,
+      "veracode_vulnerability",
+    )),
+    ...(await toEntityOperations(
+      context,
+      Object.values(serviceMap),
       "veracode_scan",
     )),
+    ...(await toEntityOperations(context, findingEntities, "veracode_finding")),
   ];
 
   const relationshipOperations = [
@@ -81,8 +98,13 @@ export async function processFindings(
     )),
     ...(await toRelationshipOperations(
       context,
-      findingCWERelationships,
+      vulnerabilityCWERelationships,
       "veracode_finding_exploits_cwe",
+    )),
+    ...(await toRelationshipOperations(
+      context,
+      vulnerabilityFindingRelationships,
+      "veracode_finding_is_veracode_vulnerability",
     )),
   ];
 
