@@ -7,10 +7,15 @@ import {
   AccountServiceRelationship,
   CWEEntity,
   CWEEntityMap,
-  FindingCWERelationship,
   FindingEntity,
+  FindingEntityMap,
   ServiceEntity,
+  ServiceEntityMap,
   ServiceVulnerabilityRelationship,
+  VulnerabilityCWERelationship,
+  VulnerabilityEntity,
+  VulnerabilityEntityMap,
+  VulnerabilityFindingRelationship,
 } from "./types";
 
 interface CWEReference {
@@ -28,6 +33,13 @@ interface CWEData {
   severity: number;
 }
 
+interface FindingSource {
+  module: string;
+  file_name: string;
+  file_line_number: string;
+  file_path: string;
+}
+
 interface FindingStatus {
   status: string;
   reopened: boolean;
@@ -37,6 +49,13 @@ interface FindingStatus {
   resolved_date?: string;
   reopened_date?: string;
   modified_date: string;
+  finding_source: FindingSource;
+}
+
+interface FindingCategory {
+  id: string;
+  name: string;
+  description: string;
 }
 
 export interface FindingData {
@@ -44,7 +63,8 @@ export interface FindingData {
   cwe: CWEData;
   description?: string;
   exploitability: number;
-  finding_status: FindingStatus;
+  finding_status: { [applicationId: string]: FindingStatus };
+  finding_category: FindingCategory;
   guid: string;
   severity: number;
   scan_type: string;
@@ -60,8 +80,11 @@ export interface ApplicationData {
 }
 
 interface FromFindings {
+  vulnerabilities: VulnerabilityEntity[];
+
   cweMap: CWEEntityMap;
-  findingEntities: FindingEntity[];
+  findingMap: FindingEntityMap;
+  serviceMap: ServiceEntityMap;
 }
 
 export function fromFindings(
@@ -69,52 +92,32 @@ export function fromFindings(
   application: ApplicationData,
 ): FromFindings {
   const cweMap: CWEEntityMap = {};
-  const findingEntities: FindingEntity[] = [];
+  const vulnerabilityMap: VulnerabilityEntityMap = {};
+  const serviceMap: ServiceEntityMap = {};
+  const findingMap: FindingEntityMap = {};
 
   for (const finding of findings) {
-    cweMap[finding.cwe.id] = {
-      _class: "Weakness",
-      _key: finding.cwe.id.toString(),
-      _type: "cwe",
-      description: finding.cwe.description,
-      displayName: finding.cwe.name,
-      id: finding.cwe.id,
-      name: finding.cwe.name,
-      recommendation: finding.cwe.recommendation,
-      references: finding.cwe.references.map(r => r.url),
-      remediationEffort: finding.cwe.remediation_effort,
-      severity: finding.cwe.severity,
-    };
+    vulnerabilityMap[finding.finding_category.id] = toVulnerabilityEntity(
+      finding,
+    );
 
-    findingEntities.push({
-      _class: "Vulnerability",
-      _key: finding.guid,
-      _type: "veracode_finding",
-      category: "application",
-      cvss: finding.cvss,
-      cwe: finding.cwe.id,
-      description: finding.description,
-      displayName: finding.cwe.name, // We're using the name of the weakness because Veracode provides no other name.
-      exploitability: finding.exploitability,
-      impacts: [application.profile.name],
-      name: finding.cwe.name,
-      public: false,
-      scanType: finding.scan_type,
-      severity: finding.severity,
+    cweMap[finding.cwe.id] = toCWEEntity(finding);
+    serviceMap[finding.scan_type] = toServiceEntity(finding);
 
-      open: finding.finding_status.status === "OPEN",
-      reopened: finding.finding_status.reopened,
-      resolution: finding.finding_status.resolution,
-      resolutionStatus: finding.finding_status.resolution_status,
-
-      foundDate: finding.finding_status.found_date,
-      modifiedDate: finding.finding_status.modified_date,
-      reopenedDate: finding.finding_status.reopened_date,
-      resolvedDate: finding.finding_status.resolved_date,
-    });
+    findingMap[finding.finding_category.id] =
+      findingMap[finding.finding_category.id] || [];
+    findingMap[finding.finding_category.id].push(
+      toFindingEntity(finding, application),
+    );
   }
 
-  return { cweMap, findingEntities };
+  return {
+    vulnerabilities: Object.values(vulnerabilityMap),
+
+    cweMap,
+    findingMap,
+    serviceMap,
+  };
 }
 
 export function toAccountEntity(instance: IntegrationInstance): AccountEntity {
@@ -127,14 +130,79 @@ export function toAccountEntity(instance: IntegrationInstance): AccountEntity {
   };
 }
 
-export function toServiceEntity(scanType: string): ServiceEntity {
+function toServiceEntity(finding: FindingData): ServiceEntity {
   return {
     _class: "Service",
-    _key: `veracode_scan_${scanType}`,
+    _key: `veracode_scan_${finding.scan_type}`,
     _type: "veracode_scan",
     category: "software",
-    displayName: scanType,
-    name: scanType,
+    displayName: finding.scan_type,
+    name: finding.scan_type,
+  };
+}
+
+function toCWEEntity(finding: FindingData): CWEEntity {
+  return {
+    _class: "Weakness",
+    _key: finding.cwe.id.toString(),
+    _type: "cwe",
+    description: finding.cwe.description,
+    displayName: finding.cwe.name,
+    id: finding.cwe.id,
+    name: finding.cwe.name,
+    recommendation: finding.cwe.recommendation,
+    references: finding.cwe.references.map(r => r.url),
+    remediationEffort: finding.cwe.remediation_effort,
+    severity: finding.cwe.severity,
+  };
+}
+
+function toVulnerabilityEntity(finding: FindingData): VulnerabilityEntity {
+  return {
+    _class: "Vulnerability",
+    _key: finding.finding_category.id,
+    _type: "veracode_vulnerability",
+    category: "application",
+    cvss: finding.cvss,
+    cwe: finding.cwe.id,
+    description: finding.description,
+    displayName: finding.finding_category.name,
+    exploitability: finding.exploitability,
+    id: finding.finding_category.id,
+    name: finding.finding_category.name,
+    public: false,
+    scanType: finding.scan_type,
+    severity: finding.severity,
+  };
+}
+
+function toFindingEntity(
+  finding: FindingData,
+  application: ApplicationData,
+): FindingEntity {
+  const findingStatus = finding.finding_status[application.guid];
+
+  return {
+    _class: "Vulnerability",
+    _key: finding.guid,
+    _type: "veracode_finding",
+
+    impacts: application.profile.name,
+
+    open: findingStatus.status === "OPEN",
+    reopened: findingStatus.reopened,
+    resolution: findingStatus.resolution,
+    resolutionStatus: findingStatus.resolution_status,
+
+    foundDate: findingStatus.found_date,
+    modifiedDate: findingStatus.modified_date,
+    reopenedDate: findingStatus.reopened_date,
+    resolvedDate: findingStatus.resolved_date,
+
+    sourceFileLineNumber: findingStatus.finding_source.file_line_number,
+    sourceFileName: findingStatus.finding_source.file_name,
+    sourceFilePath: findingStatus.finding_source.file_path,
+    sourceModule: findingStatus.finding_source.module,
   };
 }
 
@@ -154,37 +222,51 @@ export function toAccountServiceRelationship(
 
 export function toServiceVulnerabilityRelationship(
   serviceEntity: ServiceEntity,
-  findingEntity: FindingEntity,
+  vulnerabilityEntity: VulnerabilityEntity,
 ): ServiceVulnerabilityRelationship {
   return {
     _class: "IDENTIFIED",
-    _key: `${serviceEntity._key}|identified|${findingEntity._key}`,
+    _key: `${serviceEntity._key}|identified|${vulnerabilityEntity._key}`,
     _type: "veracode_scan_identified_finding",
 
     _fromEntityKey: serviceEntity._key,
-    _toEntityKey: findingEntity._key,
+    _toEntityKey: vulnerabilityEntity._key,
   };
 }
 
-export function toFindingCWERelationship(
-  findingEntity: FindingEntity,
+export function toVulnerabilityCWERelationship(
+  vulnerabilityEntity: VulnerabilityEntity,
   cweEntity: CWEEntity,
-): FindingCWERelationship {
+): VulnerabilityCWERelationship {
   return {
     _class: "EXPLOITS",
-    _key: `${findingEntity._key}|exploits|${cweEntity._key}`,
+    _key: `${vulnerabilityEntity._key}|exploits|${cweEntity._key}`,
     _type: `veracode_finding_exploits_cwe`,
 
-    _fromEntityKey: findingEntity._key,
+    _fromEntityKey: vulnerabilityEntity._key,
     _toEntityKey: cweEntity._key as string,
 
     _mapping: {
       relationshipDirection: RelationshipDirection.FORWARD,
-      sourceEntityKey: findingEntity._key,
+      sourceEntityKey: vulnerabilityEntity._key,
       targetEntity: cweEntity,
-      targetFilterKeys: [["id", cweEntity.id]],
+      targetFilterKeys: ["id", "_type"],
     },
 
     displayName: "EXPLOITS",
+  };
+}
+
+export function toVulnerabilityFindingRelationship(
+  vulnerabilityEntity: VulnerabilityEntity,
+  findingEntity: FindingEntity,
+): VulnerabilityFindingRelationship {
+  return {
+    _class: "IS",
+    _key: `${findingEntity._key}|is|${vulnerabilityEntity._key}`,
+    _type: "veracode_finding_is_veracode_vulnerability",
+
+    _fromEntityKey: findingEntity._key,
+    _toEntityKey: vulnerabilityEntity._key,
   };
 }

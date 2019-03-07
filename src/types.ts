@@ -14,22 +14,38 @@ export interface AccountEntity extends EntityFromIntegration {
   name: string;
 }
 
+export interface ServiceEntityMap {
+  [scanType: string]: ServiceEntity;
+}
+
 export interface ServiceEntity extends EntityFromIntegration {
   category: string;
   name: string;
 }
 
-export interface FindingEntity extends EntityFromIntegration {
+export interface VulnerabilityEntityMap {
+  [id: string]: VulnerabilityEntity;
+}
+
+export interface VulnerabilityEntity extends EntityFromIntegration {
+  id: string;
   category: string;
   cvss?: number;
   cwe: string;
   description?: string;
   exploitability: number;
-  impacts: string[];
   name: string;
   public: boolean;
   severity: number;
   scanType: string;
+}
+
+export interface FindingEntityMap {
+  [vulnerabilityId: string]: FindingEntity[];
+}
+
+export interface FindingEntity extends EntityFromIntegration {
+  impacts: string;
 
   open: boolean;
   reopened: boolean;
@@ -40,6 +56,11 @@ export interface FindingEntity extends EntityFromIntegration {
   modifiedDate: string;
   reopenedDate?: string;
   resolvedDate?: string;
+
+  sourceModule: string;
+  sourceFileName: string;
+  sourceFileLineNumber: string;
+  sourceFilePath: string;
 }
 
 export interface CWEEntityMap {
@@ -60,6 +81,9 @@ export type AccountServiceRelationship = RelationshipFromIntegration;
 
 export type ServiceVulnerabilityRelationship = RelationshipFromIntegration;
 
-export interface FindingCWERelationship extends RelationshipFromIntegration {
+export type VulnerabilityFindingRelationship = RelationshipFromIntegration;
+
+export interface VulnerabilityCWERelationship
+  extends RelationshipFromIntegration {
   _mapping: RelationshipMapping;
 }
