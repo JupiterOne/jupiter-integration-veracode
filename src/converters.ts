@@ -6,15 +6,11 @@ import {
   AccountEntity,
   AccountServiceRelationship,
   CWEEntity,
-  CWEEntityMap,
   FindingEntity,
-  FindingEntityMap,
   ServiceEntity,
-  ServiceEntityMap,
   ServiceVulnerabilityRelationship,
   VulnerabilityCWERelationship,
   VulnerabilityEntity,
-  VulnerabilityEntityMap,
   VulnerabilityFindingRelationship,
 } from "./types";
 
@@ -79,47 +75,6 @@ export interface ApplicationData {
   profile: ApplicationProfile;
 }
 
-interface FromFindings {
-  vulnerabilities: VulnerabilityEntity[];
-
-  cweMap: CWEEntityMap;
-  findingMap: FindingEntityMap;
-  serviceMap: ServiceEntityMap;
-}
-
-export function fromFindings(
-  findings: FindingData[],
-  application: ApplicationData,
-): FromFindings {
-  const cweMap: CWEEntityMap = {};
-  const vulnerabilityMap: VulnerabilityEntityMap = {};
-  const serviceMap: ServiceEntityMap = {};
-  const findingMap: FindingEntityMap = {};
-
-  for (const finding of findings) {
-    vulnerabilityMap[finding.finding_category.id] = toVulnerabilityEntity(
-      finding,
-    );
-
-    cweMap[finding.cwe.id] = toCWEEntity(finding);
-    serviceMap[finding.scan_type] = toServiceEntity(finding);
-
-    findingMap[finding.finding_category.id] =
-      findingMap[finding.finding_category.id] || [];
-    findingMap[finding.finding_category.id].push(
-      toFindingEntity(finding, application),
-    );
-  }
-
-  return {
-    vulnerabilities: Object.values(vulnerabilityMap),
-
-    cweMap,
-    findingMap,
-    serviceMap,
-  };
-}
-
 export function toAccountEntity(instance: IntegrationInstance): AccountEntity {
   return {
     _class: "Account",
@@ -130,10 +85,10 @@ export function toAccountEntity(instance: IntegrationInstance): AccountEntity {
   };
 }
 
-function toServiceEntity(finding: FindingData): ServiceEntity {
+export function toServiceEntity(finding: FindingData): ServiceEntity {
   return {
     _class: "Service",
-    _key: `veracode_scan_${finding.scan_type}`,
+    _key: `veracode-scan-${finding.scan_type.toLowerCase()}`,
     _type: "veracode_scan",
     category: "software",
     displayName: finding.scan_type,
@@ -141,10 +96,10 @@ function toServiceEntity(finding: FindingData): ServiceEntity {
   };
 }
 
-function toCWEEntity(finding: FindingData): CWEEntity {
+export function toCWEEntity(finding: FindingData): CWEEntity {
   return {
     _class: "Weakness",
-    _key: finding.cwe.id,
+    _key: `cwe-${finding.cwe.id}`,
     _type: "cwe",
     description: finding.cwe.description,
     displayName: finding.cwe.name,
@@ -157,10 +112,12 @@ function toCWEEntity(finding: FindingData): CWEEntity {
   };
 }
 
-function toVulnerabilityEntity(finding: FindingData): VulnerabilityEntity {
+export function toVulnerabilityEntity(
+  finding: FindingData,
+): VulnerabilityEntity {
   return {
     _class: "Vulnerability",
-    _key: finding.finding_category.id,
+    _key: `veracode-vulnerability-${finding.finding_category.id}`,
     _type: "veracode_vulnerability",
     category: "application",
     cvss: finding.cvss,
@@ -176,7 +133,7 @@ function toVulnerabilityEntity(finding: FindingData): VulnerabilityEntity {
   };
 }
 
-function toFindingEntity(
+export function toFindingEntity(
   finding: FindingData,
   application: ApplicationData,
 ): FindingEntity {
@@ -184,7 +141,7 @@ function toFindingEntity(
 
   return {
     _class: "Vulnerability",
-    _key: finding.guid,
+    _key: `veracode-finding-${finding.guid}`,
     _type: "veracode_finding",
 
     impacts: application.profile.name,
@@ -227,7 +184,7 @@ export function toServiceVulnerabilityRelationship(
   return {
     _class: "IDENTIFIED",
     _key: `${serviceEntity._key}|identified|${vulnerabilityEntity._key}`,
-    _type: "veracode_scan_identified_finding",
+    _type: "veracode_scan_identified_vulnerability",
 
     _fromEntityKey: serviceEntity._key,
     _toEntityKey: vulnerabilityEntity._key,
@@ -241,7 +198,7 @@ export function toVulnerabilityCWERelationship(
   return {
     _class: "EXPLOITS",
     _key: `${vulnerabilityEntity._key}|exploits|${cweEntity._key}`,
-    _type: `veracode_finding_exploits_cwe`,
+    _type: `veracode_vulnerability_exploits_cwe`,
 
     _fromEntityKey: vulnerabilityEntity._key,
     _toEntityKey: cweEntity._key as string,
@@ -250,7 +207,7 @@ export function toVulnerabilityCWERelationship(
       relationshipDirection: RelationshipDirection.FORWARD,
       sourceEntityKey: vulnerabilityEntity._key,
       targetEntity: cweEntity,
-      targetFilterKeys: [["id", "_type"]],
+      targetFilterKeys: ["_key"],
     },
 
     displayName: "EXPLOITS",
@@ -264,7 +221,7 @@ export function toVulnerabilityFindingRelationship(
   return {
     _class: "IS",
     _key: `${findingEntity._key}|is|${vulnerabilityEntity._key}`,
-    _type: "veracode_finding_is_veracode_vulnerability",
+    _type: "veracode_finding_is_vulnerability",
 
     _fromEntityKey: findingEntity._key,
     _toEntityKey: vulnerabilityEntity._key,
