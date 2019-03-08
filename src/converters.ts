@@ -207,7 +207,7 @@ export function toVulnerabilityCWERelationship(
       relationshipDirection: RelationshipDirection.FORWARD,
       sourceEntityKey: vulnerabilityEntity._key,
       targetEntity: cweEntity,
-      targetFilterKeys: [["id", "_type"]],
+      targetFilterKeys: ["_key"],
     },
 
     displayName: "EXPLOITS",

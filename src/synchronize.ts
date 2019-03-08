@@ -34,7 +34,7 @@ interface ProcessFindingsResults {
   serviceMap: ServiceEntityMap;
 }
 
-export function processFindings(
+function processFindings(
   findings: FindingData[],
   application: ApplicationData,
 ): ProcessFindingsResults {
