@@ -28,7 +28,7 @@ import {
 
 type Context = IntegrationExecutionContext<IntegrationInvocationEvent>;
 
-export async function processFindings(
+export async function createOperationsFromFindings(
   context: Context,
   accountEntity: AccountEntity,
   vulnerabilityEntities: VulnerabilityEntity[],
@@ -111,7 +111,7 @@ export async function processFindings(
   return [entityOperations, relationshipOperations];
 }
 
-export async function processAccount(
+export async function createOperationsFromAccount(
   context: Context,
   accountEntity: AccountEntity,
 ): Promise<PersisterOperations> {

@@ -6,15 +6,11 @@ import {
   AccountEntity,
   AccountServiceRelationship,
   CWEEntity,
-  CWEEntityMap,
   FindingEntity,
-  FindingEntityMap,
   ServiceEntity,
-  ServiceEntityMap,
   ServiceVulnerabilityRelationship,
   VulnerabilityCWERelationship,
   VulnerabilityEntity,
-  VulnerabilityEntityMap,
   VulnerabilityFindingRelationship,
 } from "./types";
 
@@ -79,47 +75,6 @@ export interface ApplicationData {
   profile: ApplicationProfile;
 }
 
-interface FromFindings {
-  vulnerabilities: VulnerabilityEntity[];
-
-  cweMap: CWEEntityMap;
-  findingMap: FindingEntityMap;
-  serviceMap: ServiceEntityMap;
-}
-
-export function fromFindings(
-  findings: FindingData[],
-  application: ApplicationData,
-): FromFindings {
-  const cweMap: CWEEntityMap = {};
-  const vulnerabilityMap: VulnerabilityEntityMap = {};
-  const serviceMap: ServiceEntityMap = {};
-  const findingMap: FindingEntityMap = {};
-
-  for (const finding of findings) {
-    vulnerabilityMap[finding.finding_category.id] = toVulnerabilityEntity(
-      finding,
-    );
-
-    cweMap[finding.cwe.id] = toCWEEntity(finding);
-    serviceMap[finding.scan_type] = toServiceEntity(finding);
-
-    findingMap[finding.finding_category.id] =
-      findingMap[finding.finding_category.id] || [];
-    findingMap[finding.finding_category.id].push(
-      toFindingEntity(finding, application),
-    );
-  }
-
-  return {
-    vulnerabilities: Object.values(vulnerabilityMap),
-
-    cweMap,
-    findingMap,
-    serviceMap,
-  };
-}
-
 export function toAccountEntity(instance: IntegrationInstance): AccountEntity {
   return {
     _class: "Account",
@@ -130,7 +85,7 @@ export function toAccountEntity(instance: IntegrationInstance): AccountEntity {
   };
 }
 
-function toServiceEntity(finding: FindingData): ServiceEntity {
+export function toServiceEntity(finding: FindingData): ServiceEntity {
   return {
     _class: "Service",
     _key: `veracode-scan-${finding.scan_type.toLowerCase()}`,
@@ -141,7 +96,7 @@ function toServiceEntity(finding: FindingData): ServiceEntity {
   };
 }
 
-function toCWEEntity(finding: FindingData): CWEEntity {
+export function toCWEEntity(finding: FindingData): CWEEntity {
   return {
     _class: "Weakness",
     _key: `cwe-${finding.cwe.id}`,
@@ -157,7 +112,9 @@ function toCWEEntity(finding: FindingData): CWEEntity {
   };
 }
 
-function toVulnerabilityEntity(finding: FindingData): VulnerabilityEntity {
+export function toVulnerabilityEntity(
+  finding: FindingData,
+): VulnerabilityEntity {
   return {
     _class: "Vulnerability",
     _key: `veracode-vulnerability-${finding.finding_category.id}`,
@@ -176,7 +133,7 @@ function toVulnerabilityEntity(finding: FindingData): VulnerabilityEntity {
   };
 }
 
-function toFindingEntity(
+export function toFindingEntity(
   finding: FindingData,
   application: ApplicationData,
 ): FindingEntity {
