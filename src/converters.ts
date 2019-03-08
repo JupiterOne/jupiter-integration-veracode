@@ -144,7 +144,7 @@ function toServiceEntity(finding: FindingData): ServiceEntity {
 function toCWEEntity(finding: FindingData): CWEEntity {
   return {
     _class: "Weakness",
-    _key: finding.cwe.id.toString(),
+    _key: finding.cwe.id,
     _type: "cwe",
     description: finding.cwe.description,
     displayName: finding.cwe.name,
@@ -250,7 +250,7 @@ export function toVulnerabilityCWERelationship(
       relationshipDirection: RelationshipDirection.FORWARD,
       sourceEntityKey: vulnerabilityEntity._key,
       targetEntity: cweEntity,
-      targetFilterKeys: ["id", "_type"],
+      targetFilterKeys: [["id", "_type"]],
     },
 
     displayName: "EXPLOITS",
