@@ -1,3 +1,4 @@
+import { execSync } from "child_process";
 import fs from "fs";
 
 const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));
@@ -22,3 +23,5 @@ fs.writeFileSync(
 
 fs.copyFileSync("LICENSE", "dist/LICENSE");
 fs.copyFileSync("README.md", "dist/README.md");
+
+execSync("cp -R docs/docs-jupiterone-io/. dist/docs");
