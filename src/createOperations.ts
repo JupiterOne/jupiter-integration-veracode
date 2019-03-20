@@ -37,9 +37,7 @@ export async function createOperationsFromFindings(
   findingMap: FindingEntityMap,
 ): Promise<PersisterOperations> {
   const accountServiceRelationships: AccountServiceRelationship[] = [];
-  const serviceVulnerabilityRelationships = new Array<
-    ServiceVulnerabilityRelationship
-  >();
+  const serviceVulnerabilityRelationships: ServiceVulnerabilityRelationship[] = [];
   const vulnerabilityCWERelationships: VulnerabilityCWERelationship[] = [];
   const vulnerabilityFindingRelationships: VulnerabilityFindingRelationship[] = [];
 
