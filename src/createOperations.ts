@@ -8,6 +8,16 @@ import {
   RelationshipOperation,
 } from "@jupiterone/jupiter-managed-integration-sdk";
 import {
+  VERACODE_ACCOUNT_ENTITY_TYPE,
+  VERACODE_ACCOUNT_SERVICE_RELATIONSHIP_TYPE,
+  VERACODE_FINDING_ENTITY_TYPE,
+  VERACODE_SERVICE_ENTITY_TYPE,
+  VERACODE_SERVICE_VULNERABILITY_RELATIONSHIP_TYPE,
+  VERACODE_VULNERABILITY_CWE_RELATIONSHIP_TYPE,
+  VERACODE_VULNERABILITY_ENTITY_TYPE,
+  VERACODE_VULNERABILITY_FINDING_RELATIONSHIP_TYPE,
+} from "./constants";
+import {
   toAccountServiceRelationship,
   toServiceVulnerabilityRelationship,
   toVulnerabilityCWERelationship,
@@ -73,36 +83,40 @@ export async function createOperationsFromFindings(
     ...(await toEntityOperations(
       context,
       vulnerabilityEntities,
-      "veracode_vulnerability",
+      VERACODE_VULNERABILITY_ENTITY_TYPE,
     )),
     ...(await toEntityOperations(
       context,
       Object.values(serviceMap),
-      "veracode_scan",
+      VERACODE_SERVICE_ENTITY_TYPE,
     )),
-    ...(await toEntityOperations(context, findingEntities, "veracode_finding")),
+    ...(await toEntityOperations(
+      context,
+      findingEntities,
+      VERACODE_FINDING_ENTITY_TYPE,
+    )),
   ];
 
   const relationshipOperations = [
     ...(await toRelationshipOperations(
       context,
       accountServiceRelationships,
-      "veracode_account_has_service",
+      VERACODE_ACCOUNT_SERVICE_RELATIONSHIP_TYPE,
     )),
     ...(await toRelationshipOperations(
       context,
       serviceVulnerabilityRelationships,
-      "veracode_scan_identified_finding",
+      VERACODE_SERVICE_VULNERABILITY_RELATIONSHIP_TYPE,
     )),
     ...(await toRelationshipOperations(
       context,
       vulnerabilityCWERelationships,
-      "veracode_finding_exploits_cwe",
+      VERACODE_VULNERABILITY_CWE_RELATIONSHIP_TYPE,
     )),
     ...(await toRelationshipOperations(
       context,
       vulnerabilityFindingRelationships,
-      "veracode_finding_is_veracode_vulnerability",
+      VERACODE_VULNERABILITY_FINDING_RELATIONSHIP_TYPE,
     )),
   ];
 
@@ -114,7 +128,11 @@ export async function createOperationsFromAccount(
   accountEntity: AccountEntity,
 ): Promise<PersisterOperations> {
   return [
-    await toEntityOperations(context, [accountEntity], "veracode_account"),
+    await toEntityOperations(
+      context,
+      [accountEntity],
+      VERACODE_ACCOUNT_ENTITY_TYPE,
+    ),
     [],
   ];
 }
