@@ -4,6 +4,7 @@ import {
 } from "@jupiterone/jupiter-managed-integration-sdk/integration/types";
 import { PersisterOperationsResult } from "@jupiterone/jupiter-managed-integration-sdk/persister/types";
 import VeracodeClient from "@jupiterone/veracode-client";
+import { DEFAULT_SERVICE_ENTITY_MAP } from "./constants";
 import {
   ApplicationData,
   FindingData,
@@ -40,7 +41,7 @@ function processFindings(
 ): ProcessFindingsResults {
   const cweMap: CWEEntityMap = {};
   const vulnerabilityMap: VulnerabilityEntityMap = {};
-  const serviceMap: ServiceEntityMap = {};
+  const serviceMap: ServiceEntityMap = DEFAULT_SERVICE_ENTITY_MAP;
   const findingMap: FindingEntityMap = {};
 
   for (const finding of findings) {

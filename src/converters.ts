@@ -3,6 +3,17 @@ import {
   RelationshipDirection,
 } from "@jupiterone/jupiter-managed-integration-sdk";
 import {
+  VERACODE_ACCOUNT_ENTITY_TYPE,
+  VERACODE_ACCOUNT_SERVICE_RELATIONSHIP_TYPE,
+  VERACODE_CWE_ENTITY_TYPE,
+  VERACODE_FINDING_ENTITY_TYPE,
+  VERACODE_SERVICE_ENTITY_TYPE,
+  VERACODE_SERVICE_VULNERABILITY_RELATIONSHIP_TYPE,
+  VERACODE_VULNERABILITY_CWE_RELATIONSHIP_TYPE,
+  VERACODE_VULNERABILITY_ENTITY_TYPE,
+  VERACODE_VULNERABILITY_FINDING_RELATIONSHIP_TYPE,
+} from "./constants";
+import {
   AccountEntity,
   AccountServiceRelationship,
   CWEEntity,
@@ -79,7 +90,7 @@ export function toAccountEntity(instance: IntegrationInstance): AccountEntity {
   return {
     _class: "Account",
     _key: instance.id,
-    _type: "veracode_account",
+    _type: VERACODE_ACCOUNT_ENTITY_TYPE,
     displayName: instance.name,
     name: instance.name,
   };
@@ -89,7 +100,7 @@ export function toServiceEntity(finding: FindingData): ServiceEntity {
   return {
     _class: "Service",
     _key: `veracode-scan-${finding.scan_type.toLowerCase()}`,
-    _type: "veracode_scan",
+    _type: VERACODE_SERVICE_ENTITY_TYPE,
     category: "software",
     displayName: finding.scan_type,
     name: finding.scan_type,
@@ -100,7 +111,7 @@ export function toCWEEntity(finding: FindingData): CWEEntity {
   return {
     _class: "Weakness",
     _key: `cwe-${finding.cwe.id}`,
-    _type: "cwe",
+    _type: VERACODE_CWE_ENTITY_TYPE,
     description: finding.cwe.description,
     displayName: finding.cwe.name,
     id: finding.cwe.id,
@@ -118,7 +129,7 @@ export function toVulnerabilityEntity(
   return {
     _class: "Vulnerability",
     _key: `veracode-vulnerability-${finding.finding_category.id}`,
-    _type: "veracode_vulnerability",
+    _type: VERACODE_VULNERABILITY_ENTITY_TYPE,
     category: "application",
     cvss: finding.cvss,
     cwe: finding.cwe.id,
@@ -142,7 +153,7 @@ export function toFindingEntity(
   return {
     _class: "Vulnerability",
     _key: `veracode-finding-${finding.guid}`,
-    _type: "veracode_finding",
+    _type: VERACODE_FINDING_ENTITY_TYPE,
 
     impacts: application.profile.name,
 
@@ -170,7 +181,7 @@ export function toAccountServiceRelationship(
   return {
     _class: "HAS",
     _key: `${accountEntity._key}|has|${serviceEntity._key}`,
-    _type: "veracode_account_has_service",
+    _type: VERACODE_ACCOUNT_SERVICE_RELATIONSHIP_TYPE,
 
     _fromEntityKey: accountEntity._key,
     _toEntityKey: serviceEntity._key,
@@ -184,7 +195,7 @@ export function toServiceVulnerabilityRelationship(
   return {
     _class: "IDENTIFIED",
     _key: `${serviceEntity._key}|identified|${vulnerabilityEntity._key}`,
-    _type: "veracode_scan_identified_vulnerability",
+    _type: VERACODE_SERVICE_VULNERABILITY_RELATIONSHIP_TYPE,
 
     _fromEntityKey: serviceEntity._key,
     _toEntityKey: vulnerabilityEntity._key,
@@ -198,7 +209,7 @@ export function toVulnerabilityCWERelationship(
   return {
     _class: "EXPLOITS",
     _key: `${vulnerabilityEntity._key}|exploits|${cweEntity._key}`,
-    _type: `veracode_vulnerability_exploits_cwe`,
+    _type: VERACODE_VULNERABILITY_CWE_RELATIONSHIP_TYPE,
 
     _fromEntityKey: vulnerabilityEntity._key,
     _toEntityKey: cweEntity._key as string,
@@ -221,7 +232,7 @@ export function toVulnerabilityFindingRelationship(
   return {
     _class: "IS",
     _key: `${findingEntity._key}|is|${vulnerabilityEntity._key}`,
-    _type: "veracode_finding_is_vulnerability",
+    _type: VERACODE_VULNERABILITY_FINDING_RELATIONSHIP_TYPE,
 
     _fromEntityKey: findingEntity._key,
     _toEntityKey: vulnerabilityEntity._key,
