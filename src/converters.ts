@@ -151,7 +151,7 @@ export function toFindingEntity(
   const findingStatus = finding.finding_status[application.guid];
 
   return {
-    _class: "Vulnerability",
+    _class: "Finding",
     _key: `veracode-finding-${finding.guid}`,
     _type: VERACODE_FINDING_ENTITY_TYPE,
 
