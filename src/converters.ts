@@ -157,6 +157,9 @@ export function toFindingEntity(
 
     impacts: application.profile.name,
 
+    displayName: finding.finding_category.name,
+    name: finding.finding_category.name,
+
     open: findingStatus.status === "OPEN",
     reopened: findingStatus.reopened,
     resolution: findingStatus.resolution,
