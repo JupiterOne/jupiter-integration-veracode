@@ -1,7 +1,4 @@
-import {
-  IntegrationExecutionContext,
-  IntegrationInvocationEvent,
-} from "@jupiterone/jupiter-managed-integration-sdk/integration/types";
+import { IntegrationExecutionContext } from "@jupiterone/jupiter-managed-integration-sdk/integration/types";
 import { PersisterOperationsResult } from "@jupiterone/jupiter-managed-integration-sdk/persister/types";
 import VeracodeClient from "@jupiterone/veracode-client";
 import { DEFAULT_SERVICE_ENTITY_MAP } from "./constants";
@@ -69,7 +66,7 @@ function processFindings(
 }
 
 export default async function synchronize(
-  context: IntegrationExecutionContext<IntegrationInvocationEvent>,
+  context: IntegrationExecutionContext,
 ): Promise<PersisterOperationsResult> {
   const config = context.instance.config as VeracodeIntegrationInstanceConfig;
 

@@ -2,7 +2,6 @@ import {
   EntityFromIntegration,
   EntityOperation,
   IntegrationExecutionContext,
-  IntegrationInvocationEvent,
   PersisterOperations,
   RelationshipFromIntegration,
   RelationshipOperation,
@@ -36,7 +35,7 @@ import {
   VulnerabilityFindingRelationship,
 } from "./types";
 
-type Context = IntegrationExecutionContext<IntegrationInvocationEvent>;
+type Context = IntegrationExecutionContext;
 
 export async function createOperationsFromFindings(
   context: Context,

@@ -1,12 +1,11 @@
 import {
   IntegrationExecutionContext,
   IntegrationInstanceConfigError,
-  IntegrationInvocationEvent,
 } from "@jupiterone/jupiter-managed-integration-sdk";
 import { VeracodeIntegrationInstanceConfig } from "./types";
 
 export default async function invocationValidator(
-  context: IntegrationExecutionContext<IntegrationInvocationEvent>,
+  context: IntegrationExecutionContext,
 ) {
   const config = context.instance.config as VeracodeIntegrationInstanceConfig;
   if (!config) {

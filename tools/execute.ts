@@ -1,32 +1,21 @@
-/* tslint:disable:no-console */
-import {
-  createLocalInvocationEvent,
-  executeSingleHandlerLocal,
-} from "@jupiterone/jupiter-managed-integration-sdk/local";
-import { createLogger, TRACE } from "bunyan";
+// tslint:disable:no-console
+import { executeIntegrationLocal } from "@jupiterone/jupiter-managed-integration-sdk";
 import executionHandler from "../src/executionHandler";
 
-async function run(): Promise<void> {
-  const logger = createLogger({ name: "local", level: TRACE });
+const integrationConfig = {
+  veracodeApiId: process.env.VERACODE_API_ID,
+  veracodeApiSecret: process.env.VERACODE_API_SECRET,
+};
 
-  const integrationConfig = {
-    veracodeApiId: process.env.VERACODE_API_ID,
-    veracodeApiSecret: process.env.VERACODE_API_SECRET,
-  };
-
-  logger.info(
-    await executeSingleHandlerLocal(
-      integrationConfig,
-      logger,
-      executionHandler,
-      {},
-      createLocalInvocationEvent(),
-    ),
-    "Execution completed successfully!",
-  );
-}
-
-run().catch(err => {
+executeIntegrationLocal(
+  integrationConfig,
+  {
+    executionHandler,
+    // tslint:disable:no-empty
+    invocationValidator: async () => {},
+  },
+  {},
+).catch(err => {
   console.log(err);
   process.exit(1);
 });
