@@ -1,5 +1,7 @@
-import { lastSuccessfulSynchronizationTime } from "@jupiterone/jupiter-managed-integration-sdk";
-import { IntegrationExecutionContext } from "@jupiterone/jupiter-managed-integration-sdk/integration/types";
+import {
+  IntegrationExecutionContext,
+  lastSuccessfulSynchronizationTime,
+} from "@jupiterone/jupiter-managed-integration-sdk";
 import { PersisterOperationsResult } from "@jupiterone/jupiter-managed-integration-sdk/persister/types";
 import VeracodeClient from "@jupiterone/veracode-client";
 import { DEFAULT_SERVICE_ENTITY_MAP } from "./constants";

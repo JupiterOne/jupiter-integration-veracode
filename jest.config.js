@@ -1,6 +1,8 @@
+const { defaults } = require("jest-config");
+
 module.exports = {
   transform: {
-    "^.+\\.tsx?$": "ts-jest",
+    "^.+\\.ts?$": "ts-jest",
   },
   testMatch: ["<rootDir>/**/*.test.{js,ts}"],
   collectCoverageFrom: ["src/**/*.ts"],
@@ -9,7 +11,7 @@ module.exports = {
     "<rootDir>/src/executionHandler.ts",
     "<rootDir>/src/veracode-client-js.d.ts",
   ],
-  moduleFileExtensions: ["ts", "js"],
+  moduleFileExtensions: [...defaults.moduleFileExtensions, "ts"],
   testEnvironment: "node",
   clearMocks: true,
   collectCoverage: true,

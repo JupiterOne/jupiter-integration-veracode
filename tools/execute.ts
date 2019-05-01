@@ -1,21 +1,21 @@
-// tslint:disable:no-console
+/* tslint:disable:no-console */
 import { executeIntegrationLocal } from "@jupiterone/jupiter-managed-integration-sdk";
-import executionHandler from "../src/executionHandler";
+import invocationConfig from "../src";
 
 const integrationConfig = {
   veracodeApiId: process.env.VERACODE_API_ID,
   veracodeApiSecret: process.env.VERACODE_API_SECRET,
 };
 
+const invocationArgs = {
+  // providerPrivateKey: process.env.PROVIDER_LOCAL_EXECUTION_PRIVATE_KEY
+};
+
 executeIntegrationLocal(
   integrationConfig,
-  {
-    executionHandler,
-    // tslint:disable:no-empty
-    invocationValidator: async () => {},
-  },
-  {},
+  invocationConfig,
+  invocationArgs,
 ).catch(err => {
-  console.log(err);
+  console.error(err);
   process.exit(1);
 });
