@@ -47,7 +47,7 @@ export interface FindingEntityMap {
 export interface FindingEntity extends EntityFromIntegration {
   name: string;
 
-  impacts: string;
+  targets: string;
 
   open: boolean;
   reopened: boolean;
