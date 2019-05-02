@@ -1,7 +1,7 @@
 import {
   IntegrationExecutionContext,
-  IntegrationInvocationEvent,
-} from "@jupiterone/jupiter-managed-integration-sdk/integration/types";
+  lastSuccessfulSynchronizationTime,
+} from "@jupiterone/jupiter-managed-integration-sdk";
 import { PersisterOperationsResult } from "@jupiterone/jupiter-managed-integration-sdk/persister/types";
 import VeracodeClient from "@jupiterone/veracode-client";
 import { DEFAULT_SERVICE_ENTITY_MAP } from "./constants";
@@ -18,6 +18,7 @@ import {
   createOperationsFromAccount,
   createOperationsFromFindings,
 } from "./createOperations";
+import formatLastSynchronization from "./formatLastSynchronization";
 import {
   CWEEntityMap,
   FindingEntityMap,
@@ -69,7 +70,7 @@ function processFindings(
 }
 
 export default async function synchronize(
-  context: IntegrationExecutionContext<IntegrationInvocationEvent>,
+  context: IntegrationExecutionContext,
 ): Promise<PersisterOperationsResult> {
   const config = context.instance.config as VeracodeIntegrationInstanceConfig;
 
@@ -86,13 +87,21 @@ export default async function synchronize(
   let serviceMap: ServiceEntityMap = {};
   let findingMap: FindingEntityMap = {};
   for (const application of applications) {
+    const lastSuccessfulSync = await lastSuccessfulSynchronizationTime(
+      context.instance.accountId,
+      context.instance.id,
+    );
+
     const {
       vulnerabilities: appVulnerabilities,
       cweMap: appCWEMap,
       serviceMap: appServiceMap,
       findingMap: appFindingMap,
     } = processFindings(
-      await veracode.getFindings(application.guid),
+      await veracode.getFindings(
+        application.guid,
+        formatLastSynchronization(lastSuccessfulSync),
+      ),
       application,
     );
 

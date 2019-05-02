@@ -1,3 +1,24 @@
 language: node_js
 node_js:
-  - "8.10"
+  - '8'
+  - '10'
+  - '11'
+
+notifications:
+  email:
+    on_success: never
+    on_failure: always
+
+script: yarn build
+
+deploy:
+  provider: npm
+  email: npm@jupiterone.io
+  api_key:
+    secure: 'j7xGyY5P2lHyv+ExHcO4zm9h2ruZb26InWf14WsAZLEDk+ZCBOf13srxK6QP2BQdvCzsBV/KUGPO055lDurYYWh8+ihiJcCOK3Uqtosn1h4aFUy3OxgppQnuPY6sxXW/2xBUSa6RRm1s9av5qn/YAYnPdRC9YWqXOudoT1xym9aqHjFvstNt+qvPn7cRqxaYqqph3iAHdwZuwdVcUpNSdbLSnBdYdTWYgGtYbZJnfyniI3mWCKXXCxLu/ihr6MuUroGfE3XJMzJ0R7ykRz/h9xo/s2JbRL+OQwNUO56X6GSk5yPzlgb2kLlDunYG4QwmbFH5mFdZyhe288GEkFmg+Z2/16B3gtutOsnZ/nmDmYE/3+Hw7dZzYjlglECfubHew30CpF1r7Mct71Eks483Vn27O08eQW+NyqhqeRAWgEcBIahD5hZ+Whl5JqPP52BPShYjLRxDFVU0iFz2+Lgii6Q27SvzTZowjpW/7lxEm7jLChyK+EPJPn1orMO+DRFwxFRdMjzOksfo4K58hE5ub7RGuHKQK1oanBME74AUh0gRG9e1pnkiiH/leiuzRE9GNfej1MTnEIa4ScaOrP62/XXmzMCjduEA80DIh17InpDMVZMikZ+heRoVdV/kttfs4rgKNkTEKBrWIcPuSvY3KvhQvvWlrHeGIzlj9gUZkrs='
+  skip_cleanup: true
+  on:
+    tags: true
+    branch: master
+    repo: JupiterOne/jupiter-integration-veracode
+    node: '8'

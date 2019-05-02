@@ -155,7 +155,7 @@ export function toFindingEntity(
     _key: `veracode-finding-${finding.guid}`,
     _type: VERACODE_FINDING_ENTITY_TYPE,
 
-    impacts: application.profile.name,
+    targets: application.profile.name,
 
     displayName: finding.finding_category.name,
     name: finding.finding_category.name,
