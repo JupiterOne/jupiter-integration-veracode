@@ -24,6 +24,7 @@ import {
   VulnerabilityEntity,
   VulnerabilityFindingRelationship,
 } from "./types";
+import getTime from "./utils/getTime";
 
 interface CWEReference {
   name: string;
@@ -165,10 +166,10 @@ export function toFindingEntity(
     resolution: findingStatus.resolution,
     resolutionStatus: findingStatus.resolution_status,
 
-    foundDate: findingStatus.found_date,
-    modifiedDate: findingStatus.modified_date,
-    reopenedDate: findingStatus.reopened_date,
-    resolvedDate: findingStatus.resolved_date,
+    foundDate: getTime(findingStatus.found_date)!,
+    modifiedDate: getTime(findingStatus.modified_date)!,
+    reopenedDate: getTime(findingStatus.reopened_date),
+    resolvedDate: getTime(findingStatus.resolved_date),
 
     sourceFileLineNumber: findingStatus.finding_source.file_line_number,
     sourceFileName: findingStatus.finding_source.file_name,
