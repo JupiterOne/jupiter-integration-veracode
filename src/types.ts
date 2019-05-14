@@ -54,10 +54,10 @@ export interface FindingEntity extends EntityFromIntegration {
   resolution: string;
   resolutionStatus: string;
 
-  foundDate: string;
-  modifiedDate: string;
-  reopenedDate?: string;
-  resolvedDate?: string;
+  foundDate: number;
+  modifiedDate: number;
+  reopenedDate?: number;
+  resolvedDate?: number;
 
   sourceModule: string;
   sourceFileName: string;
