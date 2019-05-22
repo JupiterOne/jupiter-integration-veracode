@@ -4,12 +4,12 @@ module.exports = {
   transform: {
     "^.+\\.ts?$": "ts-jest",
   },
-  testMatch: ["<rootDir>/**/*.test.{js,ts}"],
-  collectCoverageFrom: ["src/**/*.ts"],
-  coveragePathIgnorePatterns: [
-    "<rootDir>/src/index.ts",
-    "<rootDir>/src/executionHandler.ts",
-    "<rootDir>/src/veracode-client-js.d.ts",
+  testMatch: ["<rootDir>/src/**/*.test.{js,ts}"],
+  collectCoverageFrom: [
+    "src/**/*.ts",
+    "!src/executionHandler.ts",
+    "!src/index.ts",
+    "!src/veracode-client-js.d.ts",
   ],
   moduleFileExtensions: [...defaults.moduleFileExtensions, "ts"],
   testEnvironment: "node",
