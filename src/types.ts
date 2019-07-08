@@ -36,7 +36,8 @@ export interface VulnerabilityEntity extends EntityFromIntegration {
   exploitability: number;
   name: string;
   public: boolean;
-  severity: number;
+  numericSeverity: number;
+  severity: string;
   scanType: string;
 }
 

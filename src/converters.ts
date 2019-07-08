@@ -124,6 +124,16 @@ export function toCWEEntity(finding: FindingData): CWEEntity {
   };
 }
 
+// https://help.veracode.com/reader/DGHxSJy3Gn3gtuSIN2jkRQ/y6AoBBzDtboSZ~nOUsQUDg
+const severityMap: { [numericSeverity: number]: string } = {
+  0: "Informational",
+  1: "Very Low",
+  2: "Low",
+  3: "Medium",
+  4: "High",
+  5: "Very High",
+};
+
 export function toVulnerabilityEntity(
   finding: FindingData,
 ): VulnerabilityEntity {
@@ -141,7 +151,8 @@ export function toVulnerabilityEntity(
     name: finding.finding_category.name,
     public: false,
     scanType: finding.scan_type,
-    severity: finding.severity,
+    numericSeverity: finding.severity,
+    severity: severityMap[finding.severity],
   };
 }
 
