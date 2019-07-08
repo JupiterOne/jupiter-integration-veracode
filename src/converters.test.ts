@@ -21,6 +21,16 @@ const findingData: FindingData = {
     remediation_effort: 1,
     severity: 1,
   },
+  links: [
+    {
+      title: "Link 1",
+      href: "asdf",
+    },
+    {
+      title: "Link 2",
+      href: "hjkl",
+    },
+  ],
   description: "description",
   exploitability: -1,
   finding_status: {
@@ -81,6 +91,7 @@ test("convert findings -> finding entities and date type properties -> number ty
     sourceFilePath: "file_path",
     sourceModule: "module",
     targets: "name",
+    webLink: '{"Link 1":"asdf","Link 2":"hjkl"}',
   });
 });
 

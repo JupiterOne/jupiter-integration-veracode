@@ -78,6 +78,12 @@ export interface FindingData {
   guid: string;
   severity: number;
   scan_type: string;
+  links: FindingLink[];
+}
+
+interface FindingLink {
+  title: string;
+  href: string;
 }
 
 interface ApplicationProfile {
@@ -189,6 +195,12 @@ export function toFindingEntity(
 
     displayName: finding.finding_category.name,
     name: finding.finding_category.name,
+    webLink: JSON.stringify(
+      finding.links.reduce((map: { [linkTitle: string]: string }, link) => {
+        map[link.title] = link.href;
+        return map;
+      }, {}),
+    ),
 
     open: findingStatus.status === "OPEN",
     reopened: findingStatus.reopened,
