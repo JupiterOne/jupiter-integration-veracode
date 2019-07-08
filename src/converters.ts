@@ -124,7 +124,14 @@ export function toCWEEntity(finding: FindingData): CWEEntity {
   };
 }
 
-// https://help.veracode.com/reader/DGHxSJy3Gn3gtuSIN2jkRQ/y6AoBBzDtboSZ~nOUsQUDg
+/**
+ * For more information on these mappings, check out the Veracode documentation:
+ * https://help.veracode.com/reader/DGHxSJy3Gn3gtuSIN2jkRQ/y6AoBBzDtboSZ~nOUsQUDg
+ *
+ * Please note that we cannot guarantee that the above docs link will continue
+ * working.
+ */
+
 const severityMap: { [numericSeverity: number]: string } = {
   0: "Informational",
   1: "Very Low",
@@ -132,6 +139,14 @@ const severityMap: { [numericSeverity: number]: string } = {
   3: "Medium",
   4: "High",
   5: "Very High",
+};
+
+const exploitabilityMap: { [numericExploitability: number]: string } = {
+  [-2]: "Very Unlikely",
+  [-1]: "Unlikely",
+  0: "Neutral",
+  1: "Likely",
+  2: "Very Likely",
 };
 
 export function toVulnerabilityEntity(
@@ -146,7 +161,8 @@ export function toVulnerabilityEntity(
     cwe: finding.cwe.id,
     description: finding.description,
     displayName: finding.finding_category.name,
-    exploitability: finding.exploitability,
+    numericExploitability: finding.exploitability,
+    exploitability: exploitabilityMap[finding.exploitability],
     id: finding.finding_category.id,
     name: finding.finding_category.name,
     public: false,
