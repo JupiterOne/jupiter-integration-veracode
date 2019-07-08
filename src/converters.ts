@@ -192,6 +192,10 @@ export function toFindingEntity(
     reopened: findingStatus.reopened,
     resolution: findingStatus.resolution,
     resolutionStatus: findingStatus.resolution_status,
+    numericSeverity: finding.severity,
+    severity: severityMap[finding.severity],
+    numericExploitability: finding.exploitability,
+    exploitability: exploitabilityMap[finding.exploitability],
 
     foundDate: getTime(findingStatus.found_date)!,
     modifiedDate: getTime(findingStatus.modified_date)!,

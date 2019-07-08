@@ -55,6 +55,10 @@ export interface FindingEntity extends EntityFromIntegration {
   reopened: boolean;
   resolution: string;
   resolutionStatus: string;
+  numericSeverity: number;
+  severity: string;
+  numericExploitability: number;
+  exploitability: string;
 
   foundDate: number;
   modifiedDate: number;
