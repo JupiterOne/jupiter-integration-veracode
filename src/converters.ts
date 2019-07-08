@@ -8,6 +8,7 @@ import {
   VERACODE_CWE_ENTITY_TYPE,
   VERACODE_FINDING_ENTITY_TYPE,
   VERACODE_SERVICE_ENTITY_TYPE,
+  VERACODE_SERVICE_FINDING_RELATIONSHIP_TYPE,
   VERACODE_SERVICE_VULNERABILITY_RELATIONSHIP_TYPE,
   VERACODE_VULNERABILITY_CWE_RELATIONSHIP_TYPE,
   VERACODE_VULNERABILITY_ENTITY_TYPE,
@@ -19,6 +20,7 @@ import {
   CWEEntity,
   FindingEntity,
   ServiceEntity,
+  ServiceFindingRelationship,
   ServiceVulnerabilityRelationship,
   VulnerabilityCWERelationship,
   VulnerabilityEntity,
@@ -235,6 +237,20 @@ export function toServiceVulnerabilityRelationship(
 
     _fromEntityKey: serviceEntity._key,
     _toEntityKey: vulnerabilityEntity._key,
+  };
+}
+
+export function toServiceFindingRelationship(
+  serviceEntity: ServiceEntity,
+  findingEntity: FindingEntity,
+): ServiceFindingRelationship {
+  return {
+    _class: "IDENTIFIED",
+    _key: `${serviceEntity._key}|identified|${findingEntity._key}`,
+    _type: VERACODE_SERVICE_FINDING_RELATIONSHIP_TYPE,
+
+    _fromEntityKey: serviceEntity._key,
+    _toEntityKey: findingEntity._key,
   };
 }
 

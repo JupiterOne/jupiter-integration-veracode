@@ -90,6 +90,8 @@ export type AccountServiceRelationship = RelationshipFromIntegration;
 
 export type ServiceVulnerabilityRelationship = RelationshipFromIntegration;
 
+export type ServiceFindingRelationship = RelationshipFromIntegration;
+
 export type VulnerabilityFindingRelationship = RelationshipFromIntegration;
 
 export interface VulnerabilityCWERelationship
