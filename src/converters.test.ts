@@ -68,6 +68,7 @@ test("convert findings -> finding entities and date type properties -> number ty
     name: "name",
     open: false,
     reopened: true,
+    scanType: "scan_type",
     numericExploitability: -1,
     numericSeverity: 1,
     exploitability: "Unlikely",
