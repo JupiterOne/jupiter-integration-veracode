@@ -855,10 +855,10 @@
   resolved "https://registry.yarnpkg.com/@jupiterone/jupiter-managed-integration-sdk/-/jupiter-managed-integration-sdk-24.0.3.tgz#08341dc8e0fdb5b319e46dec5e60394a52044a75"
   integrity sha512-Qif5J3glncNThi3DM2cMExFYebIEuuqu/bQPFOTdvKwN44WtZBTSXqgNDqnfSnkZpsu7eYmt+8bkup0ke7WX4A==
 
-"@jupiterone/veracode-client@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.npmjs.org/@jupiterone/veracode-client/-/veracode-client-0.2.0.tgz#7695278d752a4a950b9db2f6a3c63ed8cd892131"
-  integrity sha512-/mmvzVUwBh1KDYvgfrOaL+tYZyiuPuE6QFYMoWuxHU4hjSpWuLRkfHtHGWYk/rVlfDJWPOi49+sQ7zeX1T56Eg==
+"@jupiterone/veracode-client@^0.3.1":
+  version "0.3.1"
+  resolved "https://registry.npmjs.org/@jupiterone/veracode-client/-/veracode-client-0.3.1.tgz#7f5ea665100b63b60083842c03a67cbd412436c5"
+  integrity sha512-TE8hTMnUcty5M/d708VS63w2PdYjbuKmJVrP2Vw6sKCUdp6XDwpf2rA78CLVnKPJdrHCCd/1EGlFpvR6t8bDWw==
   dependencies:
     archiver "^2.1.0"
     request "^2.88.0"

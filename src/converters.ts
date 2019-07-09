@@ -78,7 +78,7 @@ export interface FindingData {
   guid: string;
   severity: number;
   scan_type: string;
-  links: FindingLink[];
+  links?: FindingLink[];
 }
 
 interface FindingLink {
@@ -217,7 +217,7 @@ export function toFindingEntity(
     sourceModule: findingStatus.finding_source.module,
   };
 
-  const webLinks = finding.links.reduce(
+  const webLinks = (finding.links || []).reduce(
     (links: { [webLink: string]: string }, link, index) => {
       // `index || ""` takes advantage of the fact that 0 is falsy, but any other
       // number is not.

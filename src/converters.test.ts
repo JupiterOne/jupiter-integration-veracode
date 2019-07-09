@@ -5,6 +5,13 @@ import {
   toVulnerabilityEntity,
 } from "./converters";
 
+const application: ApplicationData = {
+  guid: "111",
+  profile: {
+    name: "name",
+  },
+};
+
 const findingData: FindingData = {
   cvss: 1,
   cwe: {
@@ -60,39 +67,63 @@ const findingData: FindingData = {
   scan_type: "scan_type",
 };
 
-test("convert findings -> finding entities and date type properties -> number type", () => {
-  const application: ApplicationData = {
-    guid: "111",
-    profile: {
+describe("findings", () => {
+  test("converts date type properties to number type", () => {
+    expect(toFindingEntity(findingData, application)).toEqual({
+      _class: "Finding",
+      _key: "veracode-finding-guid",
+      _type: "veracode_finding",
+      displayName: "name",
+      foundDate: 1555969433000,
+      modifiedDate: 1555969433000,
       name: "name",
-    },
-  };
+      open: false,
+      reopened: true,
+      scanType: "scan_type",
+      numericExploitability: -1,
+      numericSeverity: 1,
+      exploitability: "Unlikely",
+      severity: "Low",
+      resolution: "resolution",
+      resolutionStatus: "resolution_status",
+      resolvedDate: 1555969433000,
+      sourceFileLineNumber: "file_line_number",
+      sourceFileName: "file_name",
+      sourceFilePath: "file_path",
+      sourceModule: "module",
+      targets: "name",
+      webLink: "asdf",
+      webLink1: "hjkl",
+    });
+  });
 
-  expect(toFindingEntity(findingData, application)).toEqual({
-    _class: "Finding",
-    _key: "veracode-finding-guid",
-    _type: "veracode_finding",
-    displayName: "name",
-    foundDate: 1555969433000,
-    modifiedDate: 1555969433000,
-    name: "name",
-    open: false,
-    reopened: true,
-    scanType: "scan_type",
-    numericExploitability: -1,
-    numericSeverity: 1,
-    exploitability: "Unlikely",
-    severity: "Low",
-    resolution: "resolution",
-    resolutionStatus: "resolution_status",
-    resolvedDate: 1555969433000,
-    sourceFileLineNumber: "file_line_number",
-    sourceFileName: "file_name",
-    sourceFilePath: "file_path",
-    sourceModule: "module",
-    targets: "name",
-    webLink: "asdf",
-    webLink1: "hjkl",
+  test("handles missing links", () => {
+    expect(
+      toFindingEntity({ ...findingData, links: undefined }, application),
+    ).toEqual({
+      _class: "Finding",
+      _key: "veracode-finding-guid",
+      _type: "veracode_finding",
+      displayName: "name",
+      foundDate: 1555969433000,
+      modifiedDate: 1555969433000,
+      name: "name",
+      open: false,
+      reopened: true,
+      scanType: "scan_type",
+      numericExploitability: -1,
+      numericSeverity: 1,
+      exploitability: "Unlikely",
+      severity: "Low",
+      resolution: "resolution",
+      resolutionStatus: "resolution_status",
+      resolvedDate: 1555969433000,
+      sourceFileLineNumber: "file_line_number",
+      sourceFileName: "file_name",
+      sourceFilePath: "file_path",
+      sourceModule: "module",
+      targets: "name",
+    });
   });
 });
 
