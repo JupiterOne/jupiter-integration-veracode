@@ -8,6 +8,7 @@ import {
   VERACODE_CWE_ENTITY_TYPE,
   VERACODE_FINDING_ENTITY_TYPE,
   VERACODE_SERVICE_ENTITY_TYPE,
+  VERACODE_SERVICE_FINDING_RELATIONSHIP_TYPE,
   VERACODE_SERVICE_VULNERABILITY_RELATIONSHIP_TYPE,
   VERACODE_VULNERABILITY_CWE_RELATIONSHIP_TYPE,
   VERACODE_VULNERABILITY_ENTITY_TYPE,
@@ -19,6 +20,7 @@ import {
   CWEEntity,
   FindingEntity,
   ServiceEntity,
+  ServiceFindingRelationship,
   ServiceVulnerabilityRelationship,
   VulnerabilityCWERelationship,
   VulnerabilityEntity,
@@ -76,6 +78,12 @@ export interface FindingData {
   guid: string;
   severity: number;
   scan_type: string;
+  links: FindingLink[];
+}
+
+interface FindingLink {
+  title: string;
+  href: string;
 }
 
 interface ApplicationProfile {
@@ -124,6 +132,31 @@ export function toCWEEntity(finding: FindingData): CWEEntity {
   };
 }
 
+/**
+ * For more information on these mappings, check out the Veracode documentation:
+ * https://help.veracode.com/reader/DGHxSJy3Gn3gtuSIN2jkRQ/y6AoBBzDtboSZ~nOUsQUDg
+ *
+ * Please note that we cannot guarantee that the above docs link will continue
+ * working.
+ */
+
+const severityMap: { [numericSeverity: number]: string } = {
+  0: "Informational",
+  1: "Low",
+  2: "Low",
+  3: "Medium",
+  4: "High",
+  5: "Critical",
+};
+
+const exploitabilityMap: { [numericExploitability: number]: string } = {
+  [-2]: "Very Unlikely",
+  [-1]: "Unlikely",
+  0: "Neutral",
+  1: "Likely",
+  2: "Very Likely",
+};
+
 export function toVulnerabilityEntity(
   finding: FindingData,
 ): VulnerabilityEntity {
@@ -136,12 +169,14 @@ export function toVulnerabilityEntity(
     cwe: finding.cwe.id,
     description: finding.description,
     displayName: finding.finding_category.name,
-    exploitability: finding.exploitability,
+    numericExploitability: finding.exploitability,
+    exploitability: exploitabilityMap[finding.exploitability],
     id: finding.finding_category.id,
     name: finding.finding_category.name,
     public: false,
     scanType: finding.scan_type,
-    severity: finding.severity,
+    numericSeverity: finding.severity,
+    severity: severityMap[finding.severity],
   };
 }
 
@@ -151,7 +186,7 @@ export function toFindingEntity(
 ): FindingEntity {
   const findingStatus = finding.finding_status[application.guid];
 
-  return {
+  const findingEntity: FindingEntity = {
     _class: "Finding",
     _key: `veracode-finding-${finding.guid}`,
     _type: VERACODE_FINDING_ENTITY_TYPE,
@@ -165,6 +200,11 @@ export function toFindingEntity(
     reopened: findingStatus.reopened,
     resolution: findingStatus.resolution,
     resolutionStatus: findingStatus.resolution_status,
+    numericSeverity: finding.severity,
+    severity: severityMap[finding.severity],
+    numericExploitability: finding.exploitability,
+    exploitability: exploitabilityMap[finding.exploitability],
+    scanType: finding.scan_type,
 
     foundDate: getTime(findingStatus.found_date)!,
     modifiedDate: getTime(findingStatus.modified_date)!,
@@ -176,6 +216,18 @@ export function toFindingEntity(
     sourceFilePath: findingStatus.finding_source.file_path,
     sourceModule: findingStatus.finding_source.module,
   };
+
+  const webLinks = finding.links.reduce(
+    (links: { [webLink: string]: string }, link, index) => {
+      // `index || ""` takes advantage of the fact that 0 is falsy, but any other
+      // number is not.
+      links["webLink" + (index || "")] = link.href;
+      return links;
+    },
+    {},
+  );
+
+  return { ...findingEntity, ...webLinks };
 }
 
 export function toAccountServiceRelationship(
@@ -203,6 +255,20 @@ export function toServiceVulnerabilityRelationship(
 
     _fromEntityKey: serviceEntity._key,
     _toEntityKey: vulnerabilityEntity._key,
+  };
+}
+
+export function toServiceFindingRelationship(
+  serviceEntity: ServiceEntity,
+  findingEntity: FindingEntity,
+): ServiceFindingRelationship {
+  return {
+    _class: "IDENTIFIED",
+    _key: `${serviceEntity._key}|identified|${findingEntity._key}`,
+    _type: VERACODE_SERVICE_FINDING_RELATIONSHIP_TYPE,
+
+    _fromEntityKey: serviceEntity._key,
+    _toEntityKey: findingEntity._key,
   };
 }
 

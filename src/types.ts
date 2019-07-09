@@ -33,10 +33,12 @@ export interface VulnerabilityEntity extends EntityFromIntegration {
   cvss?: number;
   cwe: string;
   description?: string;
-  exploitability: number;
+  numericExploitability: number;
+  exploitability: string;
   name: string;
   public: boolean;
-  severity: number;
+  numericSeverity: number;
+  severity: string;
   scanType: string;
 }
 
@@ -53,6 +55,11 @@ export interface FindingEntity extends EntityFromIntegration {
   reopened: boolean;
   resolution: string;
   resolutionStatus: string;
+  numericSeverity: number;
+  severity: string;
+  numericExploitability: number;
+  exploitability: string;
+  scanType: string;
 
   foundDate: number;
   modifiedDate: number;
@@ -82,6 +89,8 @@ export interface CWEEntity extends TargetEntityProperties {
 export type AccountServiceRelationship = RelationshipFromIntegration;
 
 export type ServiceVulnerabilityRelationship = RelationshipFromIntegration;
+
+export type ServiceFindingRelationship = RelationshipFromIntegration;
 
 export type VulnerabilityFindingRelationship = RelationshipFromIntegration;
 

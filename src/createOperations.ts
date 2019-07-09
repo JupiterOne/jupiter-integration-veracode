@@ -11,6 +11,7 @@ import {
   VERACODE_ACCOUNT_SERVICE_RELATIONSHIP_TYPE,
   VERACODE_FINDING_ENTITY_TYPE,
   VERACODE_SERVICE_ENTITY_TYPE,
+  VERACODE_SERVICE_FINDING_RELATIONSHIP_TYPE,
   VERACODE_SERVICE_VULNERABILITY_RELATIONSHIP_TYPE,
   VERACODE_VULNERABILITY_CWE_RELATIONSHIP_TYPE,
   VERACODE_VULNERABILITY_ENTITY_TYPE,
@@ -18,6 +19,7 @@ import {
 } from "./constants";
 import {
   toAccountServiceRelationship,
+  toServiceFindingRelationship,
   toServiceVulnerabilityRelationship,
   toVulnerabilityCWERelationship,
   toVulnerabilityFindingRelationship,
@@ -29,6 +31,7 @@ import {
   FindingEntity,
   FindingEntityMap,
   ServiceEntityMap,
+  ServiceFindingRelationship,
   ServiceVulnerabilityRelationship,
   VulnerabilityCWERelationship,
   VulnerabilityEntity,
@@ -47,6 +50,7 @@ export async function createOperationsFromFindings(
 ): Promise<PersisterOperations> {
   const accountServiceRelationships: AccountServiceRelationship[] = [];
   const serviceVulnerabilityRelationships: ServiceVulnerabilityRelationship[] = [];
+  const serviceFindingRelationships: ServiceFindingRelationship[] = [];
   const vulnerabilityCWERelationships: VulnerabilityCWERelationship[] = [];
   const vulnerabilityFindingRelationships: VulnerabilityFindingRelationship[] = [];
 
@@ -72,6 +76,9 @@ export async function createOperationsFromFindings(
     const findings = findingMap[vulnerability.id];
     for (const finding of findings) {
       findingEntities.push(finding);
+      serviceFindingRelationships.push(
+        toServiceFindingRelationship(service, finding),
+      );
       vulnerabilityFindingRelationships.push(
         toVulnerabilityFindingRelationship(vulnerability, finding),
       );
@@ -106,6 +113,11 @@ export async function createOperationsFromFindings(
       context,
       serviceVulnerabilityRelationships,
       VERACODE_SERVICE_VULNERABILITY_RELATIONSHIP_TYPE,
+    )),
+    ...(await toRelationshipOperations(
+      context,
+      serviceFindingRelationships,
+      VERACODE_SERVICE_FINDING_RELATIONSHIP_TYPE,
     )),
     ...(await toRelationshipOperations(
       context,

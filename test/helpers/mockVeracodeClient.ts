@@ -23,6 +23,16 @@ const mockFinding: FindingData = {
     remediation_effort: 4,
     severity: 3,
   },
+  links: [
+    {
+      title: "Link 1",
+      href: "asdf",
+    },
+    {
+      title: "Link 2",
+      href: "hjkl",
+    },
+  ],
   exploitability: 1,
   finding_category: {
     description: "Some super long description!",
