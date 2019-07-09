@@ -78,7 +78,7 @@ export interface FindingData {
   guid: string;
   severity: number;
   scan_type: string;
-  links: FindingLink[];
+  links?: FindingLink[];
 }
 
 interface FindingLink {
