@@ -142,11 +142,11 @@ export function toCWEEntity(finding: FindingData): CWEEntity {
 
 const severityMap: { [numericSeverity: number]: string } = {
   0: "Informational",
-  1: "Very Low",
+  1: "Low",
   2: "Low",
   3: "Medium",
   4: "High",
-  5: "Very High",
+  5: "Critical",
 };
 
 const exploitabilityMap: { [numericExploitability: number]: string } = {

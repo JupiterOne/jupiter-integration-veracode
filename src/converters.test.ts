@@ -82,7 +82,7 @@ test("convert findings -> finding entities and date type properties -> number ty
     numericExploitability: -1,
     numericSeverity: 1,
     exploitability: "Unlikely",
-    severity: "Very Low",
+    severity: "Low",
     resolution: "resolution",
     resolutionStatus: "resolution_status",
     resolvedDate: 1555969433000,
@@ -113,6 +113,6 @@ test("vulnerabilities", () => {
     numericSeverity: 1,
     public: false,
     scanType: "scan_type",
-    severity: "Very Low",
+    severity: "Low",
   });
 });
