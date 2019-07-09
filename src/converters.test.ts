@@ -91,7 +91,8 @@ test("convert findings -> finding entities and date type properties -> number ty
     sourceFilePath: "file_path",
     sourceModule: "module",
     targets: "name",
-    webLink: '{"Link 1":"asdf","Link 2":"hjkl"}',
+    webLink: "asdf",
+    webLink1: "hjkl",
   });
 });
 

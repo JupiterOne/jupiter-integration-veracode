@@ -186,7 +186,7 @@ export function toFindingEntity(
 ): FindingEntity {
   const findingStatus = finding.finding_status[application.guid];
 
-  return {
+  const findingEntity: FindingEntity = {
     _class: "Finding",
     _key: `veracode-finding-${finding.guid}`,
     _type: VERACODE_FINDING_ENTITY_TYPE,
@@ -195,12 +195,6 @@ export function toFindingEntity(
 
     displayName: finding.finding_category.name,
     name: finding.finding_category.name,
-    webLink: JSON.stringify(
-      finding.links.reduce((map: { [linkTitle: string]: string }, link) => {
-        map[link.title] = link.href;
-        return map;
-      }, {}),
-    ),
 
     open: findingStatus.status === "OPEN",
     reopened: findingStatus.reopened,
@@ -222,6 +216,18 @@ export function toFindingEntity(
     sourceFilePath: findingStatus.finding_source.file_path,
     sourceModule: findingStatus.finding_source.module,
   };
+
+  const webLinks = finding.links.reduce(
+    (links: { [webLink: string]: string }, link, index) => {
+      // `index || ""` takes advantage of the fact that 0 is falsy, but any other
+      // number is not.
+      links["webLink" + (index || "")] = link.href;
+      return links;
+    },
+    {},
+  );
+
+  return { ...findingEntity, ...webLinks };
 }
 
 export function toAccountServiceRelationship(
