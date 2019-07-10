@@ -1,6 +1,17 @@
-import { createTestIntegrationExecutionContext } from "@jupiterone/jupiter-managed-integration-sdk";
+import {
+  createTestIntegrationExecutionContext,
+  IntegrationInstanceAuthenticationError,
+} from "@jupiterone/jupiter-managed-integration-sdk";
 import invocationValidator from "./invocationValidator";
 import { VeracodeIntegrationInstanceConfig } from "./types";
+
+jest.mock("@jupiterone/veracode-client", () => {
+  return jest.fn().mockImplementation(() => {
+    return {
+      _restRequest: jest.fn().mockRejectedValue({ statusCode: 401 }),
+    };
+  });
+});
 
 test("passes with valid config", async () => {
   const config: VeracodeIntegrationInstanceConfig = {
@@ -34,5 +45,19 @@ test("throws error if API id and secret are not provided in instance config", as
   });
   await expect(invocationValidator(executionContext)).rejects.toThrow(
     "veracodeApiId and veracodeApiSecret are required",
+  );
+});
+
+test("throws error if API id and secret are invalid", async () => {
+  const executionContext = createTestIntegrationExecutionContext({
+    instance: {
+      config: {
+        veracodeApiId: "api-id",
+        veracodeApiSecret: "api-secret",
+      },
+    },
+  });
+  await expect(invocationValidator(executionContext)).rejects.toThrow(
+    IntegrationInstanceAuthenticationError,
   );
 });
