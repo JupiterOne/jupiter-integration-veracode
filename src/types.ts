@@ -29,17 +29,22 @@ export interface VulnerabilityEntityMap {
 
 export interface VulnerabilityEntity extends EntityFromIntegration {
   id: string;
-  category: string;
-  cvss?: number;
   cwe: string;
+
+  createdOn: number;
+
+  name: string;
   description?: string;
+  category: string;
+  scanType: string;
+
+  cvss?: number;
   numericExploitability: number;
   exploitability: string;
-  name: string;
-  public: boolean;
   numericSeverity: number;
   severity: string;
-  scanType: string;
+
+  public: boolean;
 }
 
 export interface FindingEntityMap {
@@ -61,6 +66,7 @@ export interface FindingEntity extends EntityFromIntegration {
   exploitability: string;
   scanType: string;
 
+  createdOn: number;
   foundDate: number;
   modifiedDate: number;
   reopenedDate?: number;

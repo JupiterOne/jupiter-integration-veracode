@@ -46,9 +46,20 @@ function processFindings(
   const findingMap: FindingEntityMap = {};
 
   for (const finding of findings) {
-    vulnerabilityMap[finding.finding_category.id] = toVulnerabilityEntity(
-      finding,
-    );
+    const vulnerability = toVulnerabilityEntity(finding, application);
+    const existingVulnerability = vulnerabilityMap[finding.finding_category.id];
+
+    // For a given finding category, the only differentiator between resulting
+    // vulnerabilities should be createdOn. We want to keep the older createdOn
+    // because a vulnerability's createdOn should be the date of the earliest
+    // finding of the vulnerability.
+    if (
+      !existingVulnerability ||
+      (existingVulnerability &&
+        existingVulnerability.createdOn > vulnerability.createdOn)
+    ) {
+      vulnerabilityMap[finding.finding_category.id] = vulnerability;
+    }
 
     cweMap[finding.cwe.id] = toCWEEntity(finding);
     serviceMap[finding.scan_type] = toServiceEntity(finding);

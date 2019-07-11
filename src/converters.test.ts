@@ -74,6 +74,7 @@ describe("findings", () => {
       _key: "veracode-finding-guid",
       _type: "veracode_finding",
       displayName: "name",
+      createdOn: 1555969433000,
       foundDate: 1555969433000,
       modifiedDate: 1555969433000,
       name: "name",
@@ -105,6 +106,7 @@ describe("findings", () => {
       _key: "veracode-finding-guid",
       _type: "veracode_finding",
       displayName: "name",
+      createdOn: 1555969433000,
       foundDate: 1555969433000,
       modifiedDate: 1555969433000,
       name: "name",
@@ -128,22 +130,27 @@ describe("findings", () => {
 });
 
 test("vulnerabilities", () => {
-  expect(toVulnerabilityEntity(findingData)).toEqual({
+  expect(toVulnerabilityEntity(findingData, application)).toEqual({
     _class: "Vulnerability",
     _key: "veracode-vulnerability-id",
     _type: "veracode_vulnerability",
-    category: "application",
-    cvss: 1,
-    cwe: "id",
-    description: "description",
-    displayName: "name",
-    exploitability: "Unlikely",
     id: "id",
+    cwe: "id",
+
+    createdOn: 1555969433000,
+
+    displayName: "name",
     name: "name",
-    numericExploitability: -1,
-    numericSeverity: 1,
-    public: false,
+    description: "description",
+    category: "application",
     scanType: "scan_type",
+
+    cvss: 1,
+    numericExploitability: -1,
+    exploitability: "Unlikely",
+    numericSeverity: 1,
     severity: "Low",
+
+    public: false,
   });
 });

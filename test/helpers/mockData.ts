@@ -1,13 +1,13 @@
 import { ApplicationData, FindingData } from "../../src/converters";
 
-const mockApplication: ApplicationData = {
+export const mockApplication: ApplicationData = {
   guid: "some-guid",
   profile: {
     name: "my-app",
   },
 };
 
-const mockFinding: FindingData = {
+export const mockFinding: FindingData = {
   cvss: 50,
   cwe: {
     description: "This vulnerability is very bad.",
@@ -46,8 +46,8 @@ const mockFinding: FindingData = {
       resolution_status: "NONE",
       status: "OPEN",
 
-      found_date: Date.now().toString(),
-      modified_date: Date.now().toString(),
+      found_date: new Date().toISOString(),
+      modified_date: new Date().toISOString(),
 
       finding_source: {
         file_line_number: "420",
@@ -60,14 +60,4 @@ const mockFinding: FindingData = {
   guid: "another-guid",
   scan_type: "STATIC",
   severity: 3,
-};
-
-export default {
-  getApplications() {
-    return [mockApplication];
-  },
-
-  getFindings() {
-    return [mockFinding];
-  },
 };
