@@ -159,24 +159,33 @@ const exploitabilityMap: { [numericExploitability: number]: string } = {
 
 export function toVulnerabilityEntity(
   finding: FindingData,
+  application: ApplicationData,
 ): VulnerabilityEntity {
+  const findingStatus = finding.finding_status[application.guid];
+
   return {
     _class: "Vulnerability",
     _key: `veracode-vulnerability-${finding.finding_category.id}`,
     _type: VERACODE_VULNERABILITY_ENTITY_TYPE,
-    category: "application",
-    cvss: finding.cvss,
+
+    id: finding.finding_category.id,
     cwe: finding.cwe.id,
-    description: finding.description,
+
+    createdOn: getTime(findingStatus.found_date)!,
+
     displayName: finding.finding_category.name,
+    name: finding.finding_category.name,
+    description: finding.description,
+    category: "application",
+    scanType: finding.scan_type,
+
+    cvss: finding.cvss,
     numericExploitability: finding.exploitability,
     exploitability: exploitabilityMap[finding.exploitability],
-    id: finding.finding_category.id,
-    name: finding.finding_category.name,
-    public: false,
-    scanType: finding.scan_type,
     numericSeverity: finding.severity,
     severity: severityMap[finding.severity],
+
+    public: false,
   };
 }
 
@@ -206,6 +215,7 @@ export function toFindingEntity(
     exploitability: exploitabilityMap[finding.exploitability],
     scanType: finding.scan_type,
 
+    createdOn: getTime(findingStatus.found_date)!,
     foundDate: getTime(findingStatus.found_date)!,
     modifiedDate: getTime(findingStatus.modified_date)!,
     reopenedDate: getTime(findingStatus.reopened_date),
