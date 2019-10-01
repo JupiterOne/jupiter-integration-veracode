@@ -20,5 +20,5 @@ deploy:
   on:
     tags: true
     branch: master
-    repo: JupiterOne/jupiter-integration-veracode
+    repo: JupiterOne/graph-veracode
     node: '8'
