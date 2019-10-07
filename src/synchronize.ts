@@ -1,7 +1,4 @@
-import {
-  IntegrationExecutionContext,
-  lastSuccessfulSynchronizationTime,
-} from "@jupiterone/jupiter-managed-integration-sdk";
+import { IntegrationExecutionContext } from "@jupiterone/jupiter-managed-integration-sdk";
 import { PersisterOperationsResult } from "@jupiterone/jupiter-managed-integration-sdk/persister/types";
 import VeracodeClient from "@jupiterone/veracode-client";
 import { DEFAULT_SERVICE_ENTITY_MAP } from "./constants";
@@ -98,10 +95,9 @@ export default async function synchronize(
   let serviceMap: ServiceEntityMap = {};
   let findingMap: FindingEntityMap = {};
   for (const application of applications) {
-    const lastSuccessfulSync = await lastSuccessfulSynchronizationTime(
-      context.instance.accountId,
-      context.instance.id,
-    );
+    const lastSuccessfulSync = await context.clients
+      .getClients()
+      .integrationService.lastSuccessfulSynchronizationTime();
 
     const {
       vulnerabilities: appVulnerabilities,
