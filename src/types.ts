@@ -2,7 +2,6 @@ import {
   EntityFromIntegration,
   RelationshipFromIntegration,
   RelationshipMapping,
-  TargetEntityProperties,
 } from "@jupiterone/jupiter-managed-integration-sdk";
 
 export interface VeracodeIntegrationInstanceConfig {
@@ -82,7 +81,7 @@ export interface CWEEntityMap {
   [id: string]: CWEEntity;
 }
 
-export interface CWEEntity extends TargetEntityProperties {
+export interface CWEEntity extends EntityFromIntegration {
   id: string;
   description: string;
   name: string;

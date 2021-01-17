@@ -1,7 +1,5 @@
-import {
-  IntegrationInstance,
-  RelationshipDirection,
-} from "@jupiterone/jupiter-managed-integration-sdk";
+import { RelationshipDirection } from "@jupiterone/jupiter-managed-integration-sdk";
+
 import {
   VERACODE_ACCOUNT_ENTITY_TYPE,
   VERACODE_ACCOUNT_SERVICE_RELATIONSHIP_TYPE,
@@ -95,7 +93,9 @@ export interface ApplicationData {
   profile: ApplicationProfile;
 }
 
-export function toAccountEntity(instance: IntegrationInstance): AccountEntity {
+export function toAccountEntity(
+  instance: { id: string; name: string } /* IntegrationInstance */,
+): AccountEntity {
   return {
     _class: "Account",
     _key: instance.id,

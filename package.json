@@ -28,8 +28,9 @@
     "test": "jest"
   },
   "dependencies": {
-    "@jupiterone/jupiter-managed-integration-sdk": "^33.7.5",
-    "@jupiterone/veracode-client": "^0.3.2"
+    "@jupiterone/jupiter-managed-integration-sdk": "^36.0.0",
+    "@jupiterone/veracode-client": "^0.3.2",
+    "aws-sdk": "^2.828.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",

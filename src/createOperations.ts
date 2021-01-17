@@ -146,12 +146,12 @@ export async function createOperationsFromAccount(
 
 async function toEntityOperations<T extends EntityFromIntegration>(
   context: Context,
-  entities: T[],
+  newEntities: T[],
   type: string,
 ): Promise<EntityOperation[]> {
   const { graph, persister } = context.clients.getClients();
   const oldEntities = await graph.findAllEntitiesByType(type);
-  return persister.processEntities(oldEntities, entities);
+  return persister.processEntities({ oldEntities, newEntities });
 }
 
 async function toVulnerabilityEntityOperations(
@@ -179,15 +179,18 @@ async function toVulnerabilityEntityOperations(
     }
   }
 
-  return persister.processEntities(vulnerabilitiesFromGraph, entities);
+  return persister.processEntities({
+    oldEntities: vulnerabilitiesFromGraph,
+    newEntities: entities,
+  });
 }
 
 async function toRelationshipOperations<T extends RelationshipFromIntegration>(
   context: Context,
-  relationships: T[],
+  newRelationships: T[],
   type: string,
 ): Promise<RelationshipOperation[]> {
   const { graph, persister } = context.clients.getClients();
   const oldRelationships = await graph.findRelationshipsByType(type);
-  return persister.processRelationships(oldRelationships, relationships);
+  return persister.processRelationships({ oldRelationships, newRelationships });
 }
