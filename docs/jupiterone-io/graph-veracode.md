@@ -8,6 +8,25 @@ and analyze resource relationships. Customers authorize access by creating an
 API ID and secret in the their target Veracode account and providing those
 credentials to JupiterOne.
 
+## Veracode + JupiterOne Integration Benefits
+
+- Visualize Veracode scans, cwes, vulnerabilities, and findings in the JupiterOne graph.
+- Map Veracode findings to a code repo, project, or application in your JupiterOne account.
+- Monitor Veracode cwes, findings, and vulnerabilities within the alerts app.
+- Monitor changes to Veracode scans using JupiterOne alerts.
+
+## How it Works
+
+- JupiterOne periodically fetches Veracode scans, cwes, vulerabilities, and findings to update the graph.
+- Write JupiterOne queries to review and monitor updates to the graph.
+- Configure alerts to reduce the noise of findings.
+- Configure alerts to take action when the JupiterOne graph changes.
+
+## Requirements
+
+- JupiterOne requires an API id and API secret used to authenticate with Veracode.
+- You must have permission in JupiterOne to install new integrations.
+
 ## Integration Instance Configuration
 
 The integration is triggered by an event containing the information for a
